@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pitlane-db
+    environment:
+      POSTGRES_DB: pitlane
+      POSTGRES_USER: pitlane
+      POSTGRES_PASSWORD: pitlane
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: pitlane-adminer
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
