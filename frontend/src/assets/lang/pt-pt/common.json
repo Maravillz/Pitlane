@@ -1,0 +1,47 @@
+{
+  "login": {
+    "email": "Email",
+    "error": "Email ou password incorrectos",
+    "forgot": "Esqueceste?",
+    "google": "Continuar com Google",
+    "or": "ou",
+    "password": "Password",
+    "register": "Não tens conta?",
+    "registerLink": "Regista-te",
+    "remember": "Lembrar-me",
+    "submit": "Entrar",
+    "submitting": "A entrar...",
+    "subtitle": "A tua garagem digital",
+    "title": "Pitlane",
+    "emailPlaceholder": "email@exemplo.com",
+    "passwordPlaceholder": "••••••••"
+  },
+  "nav": {
+    "login": "Entrar",
+    "profile": "O meu perfil",
+    "signOut": "Terminar sessão"
+  },
+  "bottomNav": {
+    "alerts": "Alertas",
+    "costs": "Custos",
+    "garage": "Garagem"
+  },
+  "register": {
+    "confirmPassword": "Confirmar Password",
+    "email": "Email",
+    "google": "Continuar com Google",
+    "name": "Nome",
+    "or": "ou",
+    "password": "Password",
+    "register": "Já tens conta?",
+    "registerLink": "Entrar",
+    "submit": "Criar Conta",
+    "submitting": "Criando...",
+    "subtitle": "Cria a tua conta",
+    "terms": "Aceito os termos e condições",
+    "title": "Pitlane",
+    "displayNamePlaceholder": "nome de utilizador",
+    "emailPlaceholder": "email@exemplo.com",
+    "passwordPlaceholder": "••••••••"
+  }
+}
