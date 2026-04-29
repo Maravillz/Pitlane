@@ -1,14 +1,5 @@
 @import "tailwindcss";
 
-.SecondaryBtn {
-    color: #f5a623;
-    text-decoration: none;
-    font-size: 0.9rem;
-    border: 1px solid #f5a623;
-    padding: 0.3rem 0.75rem;
-    border-radius: 6px;
-}
-
 body{
-    background-color: #242424;
+    background-color: #0f0f0f;
 }

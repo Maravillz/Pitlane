@@ -10,6 +10,10 @@ interface BottomMenu {
     route: string
 }
 
+/**
+ * Represents the application bottom nav bar
+ * @constructor
+ */
 const BottomNav = () => {
 
     const { t } = useTranslation()
@@ -33,9 +37,9 @@ const BottomNav = () => {
     ]
 
     return (
-        <nav className="border-t border-[#2e2e2e] flex justify-around bottom-0 absolute w-screen h-[9%]">
+        <nav className="border-t border-[#2e2e2e] flex justify-around bottom-0 absolute w-screen h-[9%] z-50">
             {bottomNavMenus.map((menu: BottomMenu) => {
-                return <NavLink to="/dashboard"
+                return <NavLink to={menu.route}
                                 className={({ isActive }) => "flex flex-col justify-center items-center gap-1 text-[#888] flex-1 py-1.5" + (isActive ? "text-[#f5a623]" : "")}>
                     {menu.icon}
                         <span className="text-sm">{menu.name}</span>
