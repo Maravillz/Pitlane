@@ -16,6 +16,11 @@ const primaryColor: string = "#f5a623"
 const secondaryColor: string = "#242424"
 const tertiaryColor: string = "#767c7f"
 
+/**
+ * Represents a generic button component
+ * @param cfg Configuration info for the button
+ * @constructor
+ */
 const AppButton = (cfg: PrimaryButtonConfig ) => {
 
     let buttonStyle: CSSProperties
