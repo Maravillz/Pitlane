@@ -43,5 +43,132 @@
     "displayNamePlaceholder": "display name",
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
+  },
+  "dashboard": {
+    "myGarage": "My garage",
+    "noAlerts": "No Alerts",
+    "quickResume": "Quick Resume",
+    "thisMonth": "This Month",
+    "costs": "Costs",
+    "alerts": "Alerts",
+    "in": "in",
+    "days": "days"
+  },
+  "carDetail": {
+    "alert": "alert",
+    "Alert": "Alert",
+    "alerts": "alerts",
+    "Alerts": "Alerts",
+    "total": "Total",
+    "interv": "Interventions",
+    "updated": "Updated",
+    "newMaint": "New Maint",
+    "registerKm": "Register Km",
+    "edit": "Edit",
+    "resume": "Resume",
+    "maintenances": "Maintenances",
+    "in": "In",
+    "next": "next",
+    "days": "days",
+    "nextLabel": "Next",
+    "resolved": "Resolved",
+    "noAlerts": "No active alerts",
+    "noMaintenances": "No maintenance records yet",
+    "addFirst": "+ Add first maintenance"
+  },
+  "createCar": {
+    "brand": "Brand",
+    "brandPlaceholder": "ex: Honda",
+    "model": "Model",
+    "modelPlaceholder": "ex: Civic EK4",
+    "year": "Year",
+    "yearPlaceholder": "1998",
+    "plate": "License Plate",
+    "platePlaceholder": "XX-00-XX",
+    "mileage": "Initial Mileage",
+    "mileagePlaceholder": "187000",
+    "addCar": "Add Car"
+  },
+  "createMaintenance": {
+    "maintenanceType": "Maintenance Type",
+    "date": "Date",
+    "mileage": "Mileage",
+    "cost": "Cost (EUR)",
+    "notes": "Notes",
+    "in": "in",
+    "or": "or",
+    "noAlert": "No Alerts",
+    "days": "days",
+    "error": "Error creating maintenance",
+    "photos": "Photos",
+    "createAlert": "Create Alert"
+  },
+  "datepicker": {
+    "months_short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "months_full": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "days_of_week": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "select_date": "Select date",
+    "back": "‹ Back",
+    "confirm": "Confirm",
+    "hour": "hour",
+    "minute": "minute"
+  },
+  "maintenanceTypes": {
+    "OIL_CHANGE": "Oil Change",
+    "TIRE_ROTATION": "Tire rotation",
+    "BRAKE_SERVICE": "Brake Service",
+    "AIR_FILTER": "Air Filter",
+    "SPARK_PLUGS": "Spark Plugs",
+    "TIMING_BELT": "Timing Belt",
+    "COOLANT_FLUSH": "Coolant Flush",
+    "TRANSMISSION_SERVICE": "Transmission Service",
+    "BATTERY": "Battery",
+    "INSPECTION": "Inspection",
+    "OTHER": "Other"
+  },
+  "alertPage": {
+    "actives": "Actives",
+    "resolved": "Resolved"
+  },
+  "costs": {
+    "month": "Month",
+    "year": "Year",
+    "total": "Total",
+    "totalSpent": "total spent in",
+    "allTime": "always",
+    "byCategory": "By category",
+    "byVehicle": "By vehicle"
+  },
+  "registerMileage": {
+    "title": "Update Km",
+    "current": "Current",
+    "newMileage": "New Km",
+    "confirm": "Confirm",
+    "error": "The value must be more than the current"
+  },
+  "updateVehicle": {
+    "title": "Update Vehícle",
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "plate": "Plate",
+    "confirm": "Confirm",
+    "error": "The vehicle information must be valid"
+  },
+  "alerts": {
+    "allGood": "All alerts resolved",
+    "noAlerts": "No Alerts",
+    "noAlertsSubtitle": "Activate alerts when creating maintenances"
+  },
+  "form": {
+    "submit": "Submit"
+  },
+  "profile": {
+    "vehicles": "vehicles",
+    "totalCosts": "spent",
+    "maintenances": "maintenances",
+    "language": "Language",
+    "myVehicles": "My vehicles",
+    "alerts": "Alerts"
   }
 }

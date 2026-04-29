@@ -43,5 +43,132 @@
     "displayNamePlaceholder": "nome de utilizador",
     "emailPlaceholder": "email@exemplo.com",
     "passwordPlaceholder": "••••••••"
+  },
+  "dashboard": {
+    "myGarage": "A minha garagem",
+    "noAlerts": "Sem Alertas",
+    "quickResume": "Resumo Rápido",
+    "thisMonth": "Este mês",
+    "costs": "Gastos",
+    "alerts": "Alertas",
+    "in": "em",
+    "days": "dias"
+  },
+  "carDetail": {
+    "alert": "alerta",
+    "Alert": "Alerta",
+    "alerts": "alertas",
+    "Alerts": "Alertas",
+    "total": "Total",
+    "interv": "Intervenções",
+    "updated": "Atualizado",
+    "newMaint": "Nova Manut",
+    "registerKm": "Registar Km",
+    "edit": "Editar",
+    "resume": "Resumo",
+    "maintenances": "Manutenções",
+    "in": "Em",
+    "next": "prox.",
+    "days": "dias",
+    "nextLabel": "Próximo",
+    "resolved": "Resolvido",
+    "noAlerts": "Sem alertas activos",
+    "noMaintenances": "Ainda sem manutenções registadas",
+    "addFirst": "+ Registar primeira manutenção"
+  },
+  "createCar": {
+    "brand": "Marca",
+    "brandPlaceholder": "ex: Honda",
+    "model": "Modelo",
+    "modelPlaceholder": "ex: Civic EK4",
+    "year": "Ano",
+    "yearPlaceholder": "1998",
+    "plate": "Matrícula",
+    "platePlaceholder": "XX-00-XX",
+    "mileage": "Quilometragem Inicial",
+    "mileagePlaceholder": "187000",
+    "addCar": "Adicionar Carro"
+  },
+  "createMaintenance": {
+    "maintenanceType": "Tipo de Manutenção",
+    "date": "Data",
+    "mileage": "Quilometragem",
+    "cost": "Custo (EUR)",
+    "notes": "Notas",
+    "in": "em",
+    "or": "ou",
+    "noAlert": "Sem Alertas",
+    "days": "dias",
+    "error": "Erro a criar manutenção",
+    "photos": "Fotos",
+    "createAlert": "Criar Alerta"
+  },
+  "datepicker": {
+    "months_short": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+    "months_full": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+    "days_of_week": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+    "select_date": "Selecionar data",
+    "back": "‹ Voltar",
+    "confirm": "Confirmar",
+    "hour": "hora",
+    "minute": "minuto"
+  },
+  "maintenanceTypes": {
+    "OIL_CHANGE": "Óleo + filtro",
+    "TIRE_ROTATION": "Rotação de pneus",
+    "BRAKE_SERVICE": "Travões",
+    "AIR_FILTER": "Filtro de ar",
+    "SPARK_PLUGS": "Velas",
+    "TIMING_BELT": "Correia de distribuição",
+    "COOLANT_FLUSH": "Líquido de arrefecimento",
+    "TRANSMISSION_SERVICE": "Caixa de velocidades",
+    "BATTERY": "Bateria",
+    "INSPECTION": "Inspeção",
+    "OTHER": "Outro"
+  },
+  "alertPage": {
+    "actives": "Ativos",
+    "resolved": "Resolvidos"
+  },
+  "costs": {
+    "month": "Mês",
+    "year": "Ano",
+    "total": "Total",
+    "totalSpent": "total gasto em",
+    "allTime": "sempre",
+    "byCategory": "Por categoria",
+    "byVehicle": "Por veículo"
+  },
+  "registerMileage": {
+    "title": "Atualizar Km",
+    "current": "Atual",
+    "newMileage": "Novo Km",
+    "confirm": "Confirmar",
+    "error": "O valor tem de ser superior ao actual"
+  },
+  "updateVehicle": {
+    "title": "Atualizar Veículo",
+    "brand": "Marca",
+    "model": "Modelo",
+    "year": "Ano",
+    "plate": "Matrícula",
+    "confirm": "Confirmar",
+    "error": "As informações do veículo têm qe ser válidas"
+  },
+  "alerts": {
+    "allGood": "Todos os alertas resolvidos",
+    "noAlerts": "Sem Alertas",
+    "noAlertsSubtitle": "Ative alertas ao criar manutenções"
+  },
+  "form": {
+    "submit": "Submeter"
+  },
+  "profile": {
+    "vehicles": "veículos",
+    "totalCosts": "gastos",
+    "maintenances": "manutenções",
+    "language": "Idioma",
+    "myVehicles": "Os meus veículos",
+    "alerts": "Alertas"
   }
 }
