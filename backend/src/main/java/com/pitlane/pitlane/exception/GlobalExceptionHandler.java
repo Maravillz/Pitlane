@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Class that allows to catch and treat exceptions and returns more detailed reasons for the exception as a response */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
