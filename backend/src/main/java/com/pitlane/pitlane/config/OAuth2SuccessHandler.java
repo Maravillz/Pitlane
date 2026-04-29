@@ -15,14 +15,18 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+/** Class to process OAuth */
 @Component
 @RequiredArgsConstructor //Since the class is forced to be created with all the fields instantiated, there is no need to use the annotation @AutoWired
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+    /** User repository */
     private final UserRepository userRepository;
 
+    /** The token utility service */
     private final JwtUtil jwtService;
 
+    /** The frontend url stored in application.properties */
     @Value("${app.frontend-url}")
     private String frontendUrl;
 

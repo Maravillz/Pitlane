@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/** Custom authentication error class */
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 

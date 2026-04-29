@@ -14,16 +14,21 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/** Auth Service */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
+    /** User Repository */
     private final UserRepository userRepository;
 
+    /** The utility service to manage the token creation */
     private final JwtUtil jwtService;
 
+    /** The password encoder */
     private final PasswordEncoder passwordEncoder;
 
+    /** The authentication manager */
     private final AuthenticationManager authenticationManager;
 
     /**

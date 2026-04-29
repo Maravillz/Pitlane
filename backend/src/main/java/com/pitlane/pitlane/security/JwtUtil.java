@@ -10,23 +10,22 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+/** Token utility service class */
 @Component
 public class JwtUtil {
 
-    //The secret string used to encrypt the keys, the secret cannot be shared
+    /** The secret string used to encrypt the keys, the secret cannot be shared */
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    //The time in ms the token will be valid for
+    /** The time in ms the token will be valid for */
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
 
-    //The encrypted key used to sign the requests to prove authenticity
+    /** The encrypted key used to sign the requests to prove authenticity */
     private SecretKey key;
 
-    /**
-     * Initializer that creates a encrypted key to sign the requests when the class is initialized, creating the key once
-     */
+    /** Initializer that creates an encrypted key to sign the requests when the class is initialized, creating the key once */
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));

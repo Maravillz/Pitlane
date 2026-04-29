@@ -16,12 +16,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/** The class that validates the token as auth overriding the original validation */
 @Component
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
+    /** The utility class for the token */
     private final JwtUtil jwtUtils;
 
+    /** The user service */
     private final CustomUserDetailsService userDetailsService;
 
 

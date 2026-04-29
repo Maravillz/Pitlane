@@ -23,19 +23,25 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/** The configuration to the authentication and layered security */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
+    /** The class to treat unauthorized exceptions */
     private final AuthEntryPointJwt unauthorizedHandler;
 
+    /** OAuth Authenticator */
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+    /** User Service */
     private final CustomUserDetailsService userDetailsService;
 
+    /** The class to authenticate the token, replacing the one on the chain */
     private final AuthTokenFilter authTokenFilter;
 
+    /** The url frontend in the app.properties */
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
@@ -67,7 +73,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(frontendUrl));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
@@ -100,9 +106,9 @@ public class WebSecurityConfig {
                             .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-                    .successHandler(oAuth2SuccessHandler))
-                    .userDetailsService(userDetailsService)
-            ;
+                    .successHandler(oAuth2SuccessHandler)
+            )
+                    .userDetailsService(userDetailsService);
 
         // Add the JWT Token filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

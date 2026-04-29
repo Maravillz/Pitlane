@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+/** User entity */
 @Data //Creates getters, setters, equals, hashCode and toString
 @AllArgsConstructor //Creates a constructor with all the fields as parameters
 @NoArgsConstructor //Creates a constructor without parameters
@@ -17,22 +18,29 @@ import java.util.UUID;
 @Builder //Allows to use a builder for this class which allows to make a custom object with specific fields filled
 @Table(name = "users")
 public class User implements UserDetails {
+
+    /** The user id */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /** The user display name */
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
+    /** The user email */
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    /** The user password after it has been encrypted */
     @Column(name = "password_hash", nullable = true) //The password is nullable due to the login related to Google Registers
     private String passwordHash;
 
+    /** The avatar url */
     @Column(name = "avatar_url", nullable = true)
     private String avatarUrl;
 
+    /** The user creation date */
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
