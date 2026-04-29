@@ -5,6 +5,10 @@ import { useAuth } from '../hooks/useAuth.ts'
 import { authService } from '../services/authService.ts'
 import type { LoginRequest } from '../models/auth.ts'
 
+/**
+ * Represents the login page
+ * @constructor
+ */
 const LoginPage = () => {
     const [form, setForm] = useState<LoginRequest>({ email: '', password: '' })
     const [error, setError] = useState<string | null>(null)
@@ -17,13 +21,16 @@ const LoginPage = () => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
+    /** After logging in, the app makes a request to store the user info to present it */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
         try {
             const res = await authService.login(form)
-            login(res.token)
+            localStorage.setItem('token', res.token)
+            const user = await authService.userInfo()
+            login(res.token, user)
             navigate('/dashboard')
         } catch {
             setError(t('login.error'))
@@ -63,18 +70,6 @@ const LoginPage = () => {
                             onChange={handleChange}
                             required
                         />
-                    </div>
-
-                    <div className="flex flex-row justify-between items-center text-sm">
-                        <div className="flex items-center">
-                            <input id="default-checkbox" type="checkbox" value=""
-                                   className="accent-[#f5a623] w-4 h-4 border border-default-medium rounded-xl bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"/>
-                            <label htmlFor="default-checkbox"
-                                   className="select-none ms-2 text-sm text-heading text-[#CCC]">{t('login.remember')}</label>
-                        </div>
-                        <Link to="/forgot-password" className="text-[#f5a623]">
-                            {t('login.forgot')}
-                        </Link>
                     </div>
 
                     {error && <p className="text-[#e74c3c] text-sm m-0">{error}</p>}

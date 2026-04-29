@@ -2,15 +2,22 @@ import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {useNavigate} from "react-router-dom";
 import type {MouseEventHandler} from "react";
 import {useTranslation} from "react-i18next";
+import {getDefaultAvatar} from "../../../../models/user.ts";
+import {useAuth} from "../../../../hooks/useAuth.ts";
 
 interface DropdownMenuItem {
     name: string,
     onClick: MouseEventHandler<HTMLAnchorElement>
 }
 
+/**
+ * Represents the user icon that allows the user to click and a menu appears with actions
+ * @constructor
+ */
 const ProfileDropdown = () => {
 
     const navigate = useNavigate()
+    const { user } = useAuth();
 
     const { t } = useTranslation()
 
@@ -23,10 +30,10 @@ const ProfileDropdown = () => {
         <Menu as="div" className="relative ml-3">
             <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 ">
                 <span className="absolute -inset-1.5" />
-                <span className="sr-only">Open user menu</span>
+                {/* Defaults to UT (User Testing) if the user display name is not read properly */}
                 <img
                     alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={getDefaultAvatar(user?.displayName ?? 'U T')}
                     className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                 />
             </MenuButton>

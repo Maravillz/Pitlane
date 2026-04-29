@@ -1,10 +1,14 @@
 import {useState} from "react";
 import type {RegisterRequest} from "../models/auth.ts";
 import {useAuth} from "../hooks/useAuth.ts";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {authService} from "../services/authService.ts";
 
+/**
+ * The register page
+ * @constructor
+ */
 const RegisterPage = () => {
     const [form, setForm] = useState<RegisterRequest>({ email: '', password: '', displayName: '' })
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
@@ -18,13 +22,16 @@ const RegisterPage = () => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
+    /** After registering, it logs the user to skip the login page after register */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
         try {
             const res = await authService.register(form)
-            login(res.token)
+            localStorage.setItem('token', res.token)
+            const user = await authService.userInfo()
+            login(res.token, user)
             navigate('/dashboard')
         } catch {
             setError(t('register.error'))
@@ -34,17 +41,17 @@ const RegisterPage = () => {
     }
 
     return (
-        <div className="h-full flex items-center justify-center p-8">
+        <div className="flex items-center justify-center px-8">
             <div className="lg:w-4/12 w-full max-w-400px rounded-2xl">
                 <h1 className="text-[#f5a623] text-3xl font-bold text-center mb-1">{t('register.title')}</h1>
-                <p className="text-[#888] text-center mb-8 text-base">{t('register.subtitle')}</p>
+                <p className="text-[#888] text-center mb-2 text-[0.9rem]">{t('register.subtitle')}</p>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
                     <div className="flex flex-col gap-2">
                         <label className="text-[#ccc] text-base">{t('register.name')}</label>
                         <input
-                            className="bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-4 py-3"
+                            className="text-[0.9rem] bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-2 py-2"
                             name="displayName"
                             type="displayName"
                             placeholder={t("register.displayNamePlaceholder")}
@@ -57,7 +64,7 @@ const RegisterPage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-[#ccc] text-base">{t('register.email')}</label>
                         <input
-                            className="bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-4 py-3"
+                            className="text-[0.9rem] bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-2 py-2"
                             name="email"
                             type="email"
                             placeholder={t("register.emailPlaceholder")}
@@ -70,7 +77,7 @@ const RegisterPage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-[#ccc] text-base">{t('register.password')}</label>
                         <input
-                            className="bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-4 py-3"
+                            className="text-[0.9rem] bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-2 py-2"
                             name="password"
                             type="password"
                             placeholder={t("register.passwordPlaceholder")}
@@ -83,7 +90,7 @@ const RegisterPage = () => {
                     <div className="flex flex-col gap-2">
                         <label className="text-[#ccc] text-base">{t('register.confirmPassword')}</label>
                         <input
-                            className="bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-4 py-3"
+                            className="text-[0.9rem] bg-[#2e2e2e] border border-solid border-[#3a3a3a] rounded-lg text-white px-2 py-2"
                             name="password"
                             type="password"
                             placeholder={t("register.passwordPlaceholder")}
@@ -93,32 +100,21 @@ const RegisterPage = () => {
                         />
                     </div>
 
-                    <div className="flex flex-row justify-between items-center">
-                        <div className="flex items-center">
-                            <input id="default-checkbox" type="checkbox" value=""
-                                   className="accent-[#f5a623] w-4 h-4 border border-default-medium rounded-xl bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"/>
-                            <label htmlFor="default-checkbox"
-                                   className="select-none ms-2 text-[0.8rem] text-heading text-[#CCC]">{t('register.terms')}</label>
-                        </div>
-                    </div>
-
                     {error && <p className="text-[#e74c3c] text-sm m-0">{error}</p>}
 
                     <button type="submit"
-                            className="bg-[#f5a623] text-[#1a1a1a] rounded-xl p-3.5 mt-2 text-base font-semibold disabled:opacity-60" disabled={loading}>
+                            className="bg-[#f5a623] text-[#1a1a1a] rounded-xl p-2.5 mt-2 text-base font-semibold disabled:opacity-60" disabled={loading}>
                         {loading ? t('register.submitting') : t('register.submit')}
                     </button>
                 </form>
 
-                <div className="flex items-center text-center text-[#555] text-sm my-5 gap-3 before:flex-1 before:border-t before:border-[#3a3a3a] after:flex-1 after:border-t after:border-[#3a3a3a]"><span>{t('register.or')}</span></div>
+                { /* Login with Google */ }
+
+                <div className="flex items-center text-center text-[#555] text-sm my-3.5 gap-3 before:flex-1 before:border-t before:border-[#3a3a3a] after:flex-1 after:border-t after:border-[#3a3a3a]"><span>{t('register.or')}</span></div>
 
                 <button className="w-full bg-transparent text-[#ccc] border border-solid border-[#3a3a3a] rounded-xl p-3.5 text-base" onClick={authService.loginWithGoogle}>
                     {t('register.google')}
                 </button>
-
-                <p className="text-center text-[#888] text-sm mt-5">
-                    {t('register.register')} <Link to="/Login">{t('register.registerLink')}</Link>
-                </p>
             </div>
         </div>
     )

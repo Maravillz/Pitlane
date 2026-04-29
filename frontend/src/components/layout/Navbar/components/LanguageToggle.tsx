@@ -8,22 +8,28 @@ interface LanguageDropdownInfo {
     flag: string
 }
 
+/**
+ * Represents the button to change the app language with a popup menu with the two current available languages
+ * @constructor
+ */
 const LanguageToggle = () => {
 
     const languagesDrop: LanguageDropdownInfo[] = [
         {
-            name: "Português",
-            code: "pt",
-            flag: "/flags/pt-pt.svg"
-        },
-        {
             name: "English",
             code: "en",
             flag: "/flags/en-gb.svg"
+        },
+        {
+            name: "Português",
+            code: "pt",
+            flag: "/flags/pt-pt.svg"
         }
     ]
 
     const {i18n} = useTranslation('common');
+
+    /** Uses the first language it can't find the one selected */
     const currentLang = languagesDrop.find(l => l.code === i18n.language) ?? languagesDrop[0]
 
     const handleLanguageChange = async (language: string) => {
