@@ -54,59 +54,64 @@ const AlertPage = () => {
         }
     }
 
+    const activeAlerts = sortAlertsByStatus(alertList.filter(a => a.resolvedAt == null))
+    const resolvedAlerts = sortAlertsByStatus(alertList.filter(a => a.resolvedAt != null))
+
     return (
-        <div className="flex flex-col">
-            {alertList.length === 0 ? (
-                <div className="flex flex-col items-center ">
-                    <CheckCircleIcon className="text-[#f59e0b] w-7 h-7 mb-2"/>
-                    <span className="text-[#888] text-sm">{t('alerts.noAlerts')}</span>
-                    <span className="text-[#555] text-xs">{t('alerts.noAlertsSubtitle')}</span>
-                </div>
-            ) : (
-                <>
-                    <p className="text-[#888] my-4 text-sm">{t('alertPage.actives')}</p>
-                    <div className="flex flex-col gap-3">
-                        {sortAlertsByStatus(alertList.filter(a => a.resolvedAt == null)).length === 0 ? (
-                            <div className="flex flex-col items-center ">
-                                <span className="text-2xl text-white">✓</span>
-                                <span className="text-[#888] text-sm">{t('alerts.allGood')}</span>
-                            </div>
-                        ) : (
-                            sortAlertsByStatus(alertList.filter(a => a.resolvedAt == null)).map((alert: AlertListResponseDto) => (
+        <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                {/* Active alerts */}
+                <div>
+                    <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">{t('alertPage.actives')}</p>
+                    {activeAlerts.length === 0 ? (
+                        <div className="flex flex-col items-center py-8 gap-2 bg-bg-card rounded-2xl border border-border">
+                            <CheckCircleIcon className="w-8 h-8 text-alert-none" />
+                            <span className="text-text-secondary text-sm">{t('alerts.allGood')}</span>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            {activeAlerts.map(alert => (
                                 <AlertCard
                                     key={alert.id}
                                     id={alert.id}
                                     maintenanceType={alert.maintenanceType}
                                     intervalKm={alert.intervalKm}
                                     intervalDays={alert.intervalDays}
-                                    borderColor={alert.alertColor ?? '#10b981'}
+                                    borderColor={alert.alertColor ?? 'var(--color-alert-none)'}
                                 >
                                     <button
-                                        className="mr-1 rounded-full w-7 h-7 flex items-center justify-center text-[#10b981] text-xl"
+                                        className="w-8 h-8 rounded-full flex items-center justify-center text-alert-none border border-alert-none/30 hover:bg-alert-none/10 active:scale-95 transition-all flex-shrink-0"
                                         onClick={() => handleResolveAlert(alert.id)}
                                     >
-                                        <CheckIcon/>
+                                        <CheckIcon className="w-4 h-4" />
                                     </button>
                                 </AlertCard>
-                            ))
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
-                    <p className="text-[#888] my-4 text-sm">{t('alertPage.resolved')}</p>
-                    <div className="flex flex-col gap-3 opacity-60">
-                        {sortAlertsByStatus(alertList.filter(a => a.resolvedAt != null)).map((alert: AlertListResponseDto) => (
-                            <AlertCard
-                                key={alert.id}
-                                id={alert.id}
-                                maintenanceType={alert.maintenanceType}
-                                intervalKm={alert.intervalKm}
-                                intervalDays={alert.intervalDays}
-                                borderColor={alert.alertColor ?? '#10b981'}
-                            />
-                        ))}
+                {/* Resolved alerts */}
+                {resolvedAlerts.length > 0 && (
+                    <div>
+                        <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                            {t('alertPage.resolved')}
+                        </p>
+                        <div className="flex flex-col gap-2 opacity-50">
+                            {resolvedAlerts.map(alert => (
+                                <AlertCard
+                                    key={alert.id}
+                                    id={alert.id}
+                                    maintenanceType={alert.maintenanceType}
+                                    intervalKm={alert.intervalKm}
+                                    intervalDays={alert.intervalDays}
+                                    borderColor={alert.alertColor ?? 'var(--color-alert-none)'}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </>
-            )}
+                )}
+            </div>
         </div>
     )
 }

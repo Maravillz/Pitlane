@@ -34,13 +34,18 @@ const CostPage = () => {
     const maxCategory = Math.max(...costs.byCategory.map(c => c.totalCents))
 
     return (
-        <div className="flex flex-col gap-6 px-3">
+        <div className="flex flex-col gap-6">
 
-            <div className="flex flex-row bg-[#1a1a1a] rounded-xl p-1">
+            {/* Period selector */}
+            <div className="flex bg-bg-card rounded-2xl p-1 border border-border">
                 {(['month', 'year', 'total'] as CostPeriod[]).map(p => (
                     <button
                         key={p}
-                        className={`flex-1 py-2 rounded-lg text-sm transition-colors ${period === p ? 'bg-[#f5a623] text-[#1a1a1a] font-semibold' : 'text-[#888]'}`}
+                        className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                            ${period === p
+                            ? 'bg-brand text-bg-card shadow-sm'
+                            : 'text-text-secondary hover:text-text-primary'
+                        }`}
                         onClick={() => setPeriod(p)}
                     >
                         {t(`costs.${p}`)}
@@ -48,49 +53,84 @@ const CostPage = () => {
                 ))}
             </div>
 
-            <div className="text-center">
-                <span className="text-[#f5a623] text-4xl font-bold">
-                    {(costs.totalCents / 100).toFixed(2)}€
-                </span>
-                <p className="text-[#888] text-sm mt-1">{t('costs.totalSpent')} {periodLabel()}</p>
-            </div>
-
-            {/* By category */}
-            <div className="flex flex-col gap-1">
-                <p className="text-[#888] text-sm">{t('costs.byCategory')}</p>
-                <div className="flex flex-col gap-3">
-                    {costs.byCategory.map(cat => (
-                        <div key={cat.category} className="flex flex-row items-center gap-3">
-                            <span className="text-[#ccc] text-sm w-20 shrink-0">{t(`maintenanceTypes.${cat.category}`)}</span>
-                            <div className="flex-1 bg-[#1a1a1a] rounded-full h-3">
-                                <div
-                                    className="h-3 rounded-full bg-[#f5a623]"
-                                    style={{ width: `${(cat.totalCents / maxCategory) * 100}%` }}
-                                />
-                            </div>
-                            <span className="text-[#888] text-sm w-16 text-right shrink-0">
-                                {(cat.totalCents / 100).toFixed(2)}€
-                            </span>
-                        </div>
-                    ))}
+            {loading ? (
+                <div className="flex items-center justify-center py-16">
+                    <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
                 </div>
-            </div>
-
-            {/* By vehicle */}
-            <div className="flex flex-col gap-1">
-                <p className="text-[#888] text-sm">{t('costs.byVehicle')}</p>
-                <div className="flex flex-col gap-2">
-                    {costs.byVehicle.map(v => (
-                        <div key={v.vehicleId} className="flex flex-row justify-between items-center bg-[#1a1a1a] rounded-xl p-4">
-                            <div className="flex flex-col">
-                                <span className="text-[#ccc] text-sm">{v.vehicleName}</span>
-                                <span className="text-[#f5a623] text-sm">{(v.totalCents / 100).toFixed(2)}€</span>
+            ) : !costs ? null : (
+                <>
+                    {/* Total */}
+                    <div className="text-center py-2">
+                        <span className="text-brand font-black text-5xl tracking-tight">
+                            {(costs.totalCents / 100).toFixed(2)}€
+                        </span>
+                        <p className="text-text-secondary text-sm mt-2">
+                            {t('costs.totalSpent')} {periodLabel()}
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        {/* By category */}
+                        <div>
+                            <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-4">
+                                {t('costs.byCategory')}
+                            </p>
+                            <div className="flex flex-col gap-4">
+                                {costs.byCategory.map(cat => (
+                                    <div key={cat.category}>
+                                        <div className="flex justify-between items-center mb-1.5">
+                                            <span className="text-text-primary text-sm font-medium">
+                                                {t(`maintenanceTypes.${cat.category}`)}
+                                            </span>
+                                            <span className="text-text-secondary text-sm">
+                                                {(cat.totalCents / 100).toFixed(2)}€
+                                            </span>
+                                        </div>
+                                        <div className="h-2 bg-border rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-brand rounded-full transition-all duration-500"
+                                                style={{ width: `${(cat.totalCents / maxCategory) * 100}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <span className="text-[#888] text-lg font-semibold">{v.percentage}%</span>
                         </div>
-                    ))}
-                </div>
-            </div>
+
+                        {/* By vehicle */}
+                        <div>
+                            <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                                {t('costs.byVehicle')}
+                            </p>
+                            <div className="flex flex-col gap-2">
+                                {costs.byVehicle.map(v => (
+                                    <div
+                                        key={v.vehicleId}
+                                        className="flex items-center justify-between bg-bg-card rounded-2xl px-4 py-4 border border-border"
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className="text-text-primary text-sm font-medium">{v.vehicleName}</span>
+                                            <span className="text-brand text-sm font-semibold mt-0.5">
+                                                {(v.totalCents / 100).toFixed(2)}€
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-1.5 w-16 bg-border rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-brand rounded-full"
+                                                    style={{ width: `${v.percentage}%` }}
+                                                />
+                                            </div>
+                                            <span className="text-text-secondary text-sm font-semibold w-10 text-right">
+                                                {v.percentage}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     )
 }

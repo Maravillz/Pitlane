@@ -8,7 +8,7 @@ import type {MaintenanceResponse} from "../models/maintenance.ts";
 import {useTranslation} from "react-i18next";
 import RegisterMileageModal from "../components/layout/RegisterMileageModal.tsx";
 import EditVehicleModal from "../components/layout/EditVehicleModal.tsx";
-import {CheckCircleIcon} from "@heroicons/react/16/solid";
+import {CheckCircleIcon, WrenchScrewdriverIcon} from "@heroicons/react/16/solid";
 import { sortAlertsByProximity } from '../utils/alertUtils'
 import AlertCard from "../components/ui/AlertCard.tsx";
 
@@ -42,7 +42,8 @@ const CarDetailPage = () => {
         },
         {
             value: `${((vehicle?.totalCosts ?? 0) / 100).toFixed(2)}€`,
-            label: t("carDetail.total")
+            label: t("carDetail.total"),
+            highlight: true
         },
         {
             value: vehicle?.totalAlerts,
@@ -60,143 +61,158 @@ const CarDetailPage = () => {
     }
 
 
-    return  <div>
-
-                { /* Vehicle info */ }
-
-                <div className="flex flex-row justify-between ">
-                    <div className="flex flex-col items-start">
-                        <span className="text-[1.2rem] text-[#CCC]">{`${vehicle?.brand} ${vehicle?.model}`}</span>
-                        <span className="text-[0.8rem] text-[#888]">{`${vehicle?.year} | ${vehicle?.plate}`}</span>
-                        <span className="pl-2 text-[0.95rem] text-[#f5a623]">{`${vehicle?.mileage} km`}</span>
-                        <span className="pl-2 text-[0.7rem] text-[#888]">{`${t("carDetail.updated")} ${vehicle?.lastUpdated != null ? new Date(vehicle?.lastUpdated).toLocaleDateString() : ''}`}</span>
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <div className="flex flex-col gap-6">
+                {/* Header */}
+                <div className="flex items-start justify-between">
+                    <div>
+                        <h1 className="text-text-primary text-xl font-bold">
+                            {vehicle?.brand} {vehicle?.model}
+                        </h1>
+                        <p className="text-text-secondary text-sm mt-0.5">
+                            {vehicle?.year} · {vehicle?.plate}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="text-brand font-bold text-lg">
+                                {Number(vehicle?.mileage).toLocaleString()} km
+                            </span>
+                            <span className="text-text-muted text-xs">
+                                · {t('carDetail.updated')} {vehicle?.lastUpdated != null ? new Date(vehicle.lastUpdated).toLocaleDateString() : ''}
+                            </span>
+                        </div>
                     </div>
-                    {vehicle?.nrActiveAlerts != 0 ?
-                        <div className="flex bg-[#2a1f0a] backdrop-opacity-90 rounded-2xl h-fit px-4 py-1">
-                            <span className="text-[0.6rem] text-[#f5a623]">{setAlertLabel(vehicle)}</span>
-                        </div> : <></>}
+                    {(vehicle?.nrActiveAlerts ?? 0) > 0 && (
+                        <span className="bg-alert-warning-bg text-alert-warning text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0">
+                            {setAlertLabel(vehicle)}
+                        </span>
+                    )}
                 </div>
 
-                { /* Vehicle actions */ }
-
-                <div className="flex flex-row gap-2 mt-6">
-                    <AppButton className="flex-1 text-sm flex h-9 px-2 py-6 items-center justify-center rounded-xl"
+                {/* Actions */}
+                <div className="grid grid-cols-3 gap-2">
+                    <AppButton
+                        className="flex-1 text-xs flex h-10 px-2 items-center justify-center rounded-xl font-medium"
                         onClick={() => setShowMileageModal(true)}
-                        text={t("carDetail.registerKm")}
-                        type={"Tertiary"}
+                        text={t('carDetail.registerKm')}
+                        type="Tertiary"
                     />
                     <AppButton
-                        className="flex-1 text-sm flex h-9 px-2 py-6 items-center justify-center rounded-xl"
-                        onClick={() => {navigate(`/maintenance`, {
-                            state: { vehicleId: id, currentMileage: vehicle?.mileage }
-                        })}}
-                        text={t("carDetail.newMaint")}
-                        type={"Primary"}/>
-                    <AppButton className="flex-1 text-sm flex h-9 px-2 py-6 items-center justify-center rounded-xl"
-                               onClick={() => setShowVehicleModal(true)}
-                               text={t("carDetail.edit")}
-                               type={"Tertiary"}/>
+                        className="flex-1 text-xs flex h-10 px-2 items-center justify-center rounded-xl font-semibold"
+                        onClick={() => navigate('/maintenance', { state: { vehicleId: id, currentMileage: vehicle?.mileage } })}
+                        text={t('carDetail.newMaint')}
+                        type="Primary"
+                    />
+                    <AppButton
+                        className="flex-1 text-xs flex h-10 px-2 items-center justify-center rounded-xl font-medium"
+                        onClick={() => setShowVehicleModal(true)}
+                        text={t('carDetail.edit')}
+                        type="Tertiary"
+                    />
                 </div>
 
-                { /* Vehicle stats cards */ }
-
-                <p className="text-[#888] my-4 text-sm">{t("carDetail.resume")}</p>
-                <div className="w-full flex flex-row gap-3">
-                    { statsCard?.map((stat) => {
-                        return <div className="flex flex-col justify-center w-full p-4 bg-[#1a1a1a] rounded-xl">
-                            <span className="text-[#CCC] text-center">{stat.value}</span>
-                            <span className="text-sm text-[#888] text-center">{stat.label}</span>
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-3">
+                    {statsCard.map((stat, i) => (
+                        <div key={i} className="flex flex-col items-center justify-center bg-bg-card rounded-2xl p-4 border border-border">
+                            <span className={`text-lg font-bold ${stat.highlight ? 'text-brand' : 'text-text-primary'}`}>
+                                {stat.value}
+                            </span>
+                            <span className="text-xs text-text-secondary text-center mt-1 leading-tight">{stat.label}</span>
                         </div>
-                    })
-                    }
+                    ))}
                 </div>
 
-                { /* Vehicle alerts */ }
-
-                <p className="text-[#888] my-4 text-sm">{t("carDetail.Alerts")}</p>
-                {vehicle?.alerts.length === 0 && (
-                    <div className="flex flex-col items-center">
-                        <CheckCircleIcon className="text-[#f5a623] w-7 h-7 mb-3"/>
-                        <span className="text-[#888] text-sm">{t('carDetail.noAlerts')}</span>
-                    </div>
-                )}
-                <div className="flex flex-col gap-3">
-                        { sortAlertsByProximity(vehicle?.alerts ?? [], Number(vehicle?.mileage)).map((alert: AlertResponse) => (
-                            <AlertCard
-                                key={alert.id}
-                                id={alert.id}
-                                maintenanceType={alert.maintenanceType}
-                                intervalKm={alert.intervalKm}
-                                intervalDays={alert.intervalDays}
-                            />
-                        ))}
-                </div>
-
-                { /* Vehicle no maintenances prompt */ }
-
+                {/* Alerts */}
                 <div>
-                    <div className="flex flex-row justify-between my-4">
-                        <span className="text-[#888] text-sm">{t("carDetail.maintenances")}</span>
-                    </div>
-                    {vehicle?.maintenances.length === 0 && (
-                        <div className="flex flex-col items-center gap-2">
-                            <span className="text-[#888] text-sm">{t('carDetail.noMaintenances')}</span>
+                    <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                        {t('carDetail.Alerts')}
+                    </p>
+                    {vehicle?.alerts.length === 0 ? (
+                        <div className="flex flex-col items-center py-6 gap-2 bg-bg-card rounded-2xl border border-border">
+                            <CheckCircleIcon className="w-8 h-8 text-alert-none" />
+                            <span className="text-text-secondary text-sm">{t('carDetail.noAlerts')}</span>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            {sortAlertsByProximity(vehicle?.alerts ?? [], Number(vehicle?.mileage)).map((alert: AlertResponse) => (
+                                <AlertCard
+                                    key={alert.id}
+                                    id={alert.id}
+                                    maintenanceType={alert.maintenanceType}
+                                    intervalKm={alert.intervalKm}
+                                    intervalDays={alert.intervalDays}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="flex flex-col gap-6">
+                {/* Maintenances */}
+                <div>
+                    <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                        {t('carDetail.maintenances')}
+                    </p>
+                    {vehicle?.maintenances.length === 0 ? (
+                        <div className="flex flex-col items-center py-6 gap-3 bg-bg-card rounded-2xl border border-border">
+                            <WrenchScrewdriverIcon className="w-8 h-8 text-text-muted" />
+                            <span className="text-text-secondary text-sm">{t('carDetail.noMaintenances')}</span>
                             <button
-                                className="text-[#f5a623] text-sm"
+                                className="text-brand text-sm font-medium"
                                 onClick={() => navigate('/maintenance', { state: { vehicleId: id, currentMileage: vehicle?.mileage } })}
                             >
                                 {t('carDetail.addFirst')}
                             </button>
                         </div>
-                    )}
-
-                    { /* Vehicle maintenances */ }
-
-                    <div className="flex flex-col gap-3">
-                        { vehicle?.maintenances.slice()
-                            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                            .map((maintenance: MaintenanceResponse) => {
-                                return <div className="flex flex-row justify-between items-center bg-[#1a1a1a] p-2 rounded-r-xl">
-                                    <div className="flex flex-row gap-3 items-center">
-                                        <div className="flex flex-col pl-2">
-                                            <span className="text-sm text-[#CCC]">{t(`maintenanceTypes.${maintenance.type}`)}</span>
-                                            <span className="text-sm text-[#888]">{`${maintenance.date} - ${maintenance.mileage} km`}</span>
+                    ) : (
+                        <div className="flex flex-col gap-2">
+                            {vehicle?.maintenances.slice()
+                                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                                .map((maintenance: MaintenanceResponse) => (
+                                    <div key={maintenance.id} className="flex flex-row justify-between items-center bg-bg-card rounded-2xl px-4 py-3 border border-border">
+                                        <div className="flex flex-col">
+                                            <span className="text-sm text-text-primary font-medium">
+                                                {t(`maintenanceTypes.${maintenance.type}`)}
+                                            </span>
+                                            <span className="text-xs text-text-secondary mt-0.5">
+                                                {maintenance.date} · {maintenance.mileage.toLocaleString()} km
+                                            </span>
                                         </div>
+                                        <span className="text-text-secondary text-sm font-medium">
+                                            {((maintenance.costCents ?? 0) / 100).toFixed(2)}€
+                                        </span>
                                     </div>
-                                    <span className="text-[#868686]">{`${((maintenance.costCents ?? 0) / 100).toFixed(2)}€`}</span>
-                                </div>
-
-                            }
-                        )}
-                    </div>
+                                ))}
+                        </div>
+                    )}
                 </div>
-
-                { /* Car detail modals */ }
-
-                {showMileageModal && vehicle && (
-                    <RegisterMileageModal
-                        vehicleId={id ?? ''}
-                        currentMileage={Number(vehicle.mileage)}
-                        onClose={() => setShowMileageModal(false)}
-                        onSuccess={(newMileage) => {
-                            setVehicle(prev => prev ? { ...prev, mileage: newMileage.toString(), lastUpdated: ((new Date()).toISOString()) } : prev)
-                        }}
-                    />
-                )}
-                {showVehicleModal && vehicle && (
-                    <EditVehicleModal
-                        vehicleId={id ?? ''}
-                        brand={vehicle.brand}
-                        model={vehicle.model}
-                        year={Number(vehicle.year)}
-                        plate={vehicle.plate}
-                        onClose={() => setShowVehicleModal(false)}
-                        onSuccess={(updateVehicle: UpdateVehicleRequest) => {
-                            setVehicle(prev => prev ? { ...prev, brand: updateVehicle.brand, model: updateVehicle.model, year: updateVehicle.year, plate: updateVehicle.plate } : prev)
-                        }}
-                    />
-                )}
             </div>
+            {showMileageModal && vehicle && (
+                <RegisterMileageModal
+                    vehicleId={id ?? ''}
+                    currentMileage={Number(vehicle.mileage)}
+                    onClose={() => setShowMileageModal(false)}
+                    onSuccess={newMileage => {
+                        setVehicle(prev => prev ? { ...prev, mileage: newMileage.toString(), lastUpdated: new Date().toISOString() } : prev)
+                    }}
+                />
+            )}
+            {showVehicleModal && vehicle && (
+                <EditVehicleModal
+                    vehicleId={id ?? ''}
+                    brand={vehicle.brand}
+                    model={vehicle.model}
+                    year={Number(vehicle.year)}
+                    plate={vehicle.plate}
+                    onClose={() => setShowVehicleModal(false)}
+                    onSuccess={(u: UpdateVehicleRequest) => {
+                        setVehicle(prev => prev ? { ...prev, brand: u.brand, model: u.model, year: u.year, plate: u.plate } : prev)
+                    }}
+                />
+            )}
+        </div>
+    )
 }
 
 export default CarDetailPage;

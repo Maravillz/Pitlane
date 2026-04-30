@@ -2,8 +2,7 @@ import {useTranslation} from "react-i18next";
 import type {VehicleResponse} from "../models/vehicle.ts";
 import { vehicleService } from '../services/vehicleService.ts'
 import {useEffect, useState} from "react";
-import AppButton from "../components/ui/AppButton.tsx";
-import {PlusIcon} from "@heroicons/react/16/solid";
+import {ChevronRightIcon, PlusIcon} from "@heroicons/react/16/solid";
 import {useNavigate} from "react-router-dom";
 
 /**
@@ -21,8 +20,9 @@ const DashboardPage = () => {
             label: t("dashboard.thisMonth")
         },
         {
-            value: (Math.round(vehicles?.map(v => v.totalMonthSpent).reduce(((prev, cost) => prev + cost)) ?? 0) / 100).toFixed(2) + "€",
-            label: t("dashboard.costs")
+            value: (Math.round(vehicles?.map(v => v.totalMonthSpent).reduce(((prev, cost) => prev + cost)) ?? 0) / 100).toFixed(0) + "€",
+            label: t("dashboard.costs"),
+            highlight: true
         },
         {
             value: vehicles?.map(v => v.totalMonthAlerts).reduce(((prev, alert) => prev + alert)),
@@ -67,40 +67,79 @@ const DashboardPage = () => {
         return `${t(`maintenanceTypes.${type}`)} ${t("dashboard.in")} ${rest.replace("dashboard.days",t("dashboard.days"))}`
     }
 
-    return <div>
-                <p className="md:text-2xl text-[#888] mb-4 mt-1 text-base">{t('dashboard.quickResume')}</p>
-                <div className="md:gap-6 md:mb-10 w-full flex flex-row gap-3 mb-4">
-                    { statsCard?.map((stat) => {
-                        return <div className="md:p-6 flex flex-col justify-center w-full p-3 bg-[#1a1a1a] rounded-xl">
-                            <span className="md:text-xl text-[#CCC] text-center">{stat.value}</span>
-                            <span className="md:text-xl text-sm text-[#888] text-center">{stat.label}</span>
+    return (
+        <div className="flex flex-col gap-6">
+
+            {/* Stats */}
+            <div>
+                <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                    {t('dashboard.quickResume')}
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                    {statsCard.map((stat, i) => (
+                        <div
+                            key={i}
+                            className="flex flex-col justify-center bg-bg-card rounded-2xl p-4 border border-border hover:border-border-subtle transition-colors"
+                        >
+                            <span className={`text-xl font-bold text-center ${stat.highlight ? 'text-brand' : 'text-text-primary'}`}>
+                                {stat.value}
+                            </span>
+                            <span className="text-xs text-text-secondary text-center mt-1 leading-tight">
+                                {stat.label}
+                            </span>
                         </div>
-                    })
-                    }
+                    ))}
                 </div>
-                <p className="md:text-2xl text-[#888] mb-4 text-base">{t('dashboard.myGarage')}</p>
-                <div className="w-full flex flex-col gap-3">
-                    <div className="flex flex-col gap-3">
-                    { vehicles?.map((vehicle) => {
-                        return <div className="flex flex-row w-full p-4 bg-[#1a1a1a] rounded-xl" onClick={() => navigate(`/vehicle/${vehicle.id}`)}>
-                            <div className="flex flex-col flex-1 gap-1">
-                                <span className="text-[#CCC]">{`${vehicle.brand} ${vehicle.model}`}</span>
-                                <span className="text-sm text-[#888]">{`${vehicle.currentMileage} km`}</span>
-                                <span className="text-sm" style={{ color: vehicle.alertColor }}>
-                                    {translateAlertMessage(vehicle.alertMessage ?? "")}
+            </div>
+
+            {/* Vehicles */}
+            <div>
+                <p className="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">
+                    {t('dashboard.myGarage')}
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    {vehicles?.map(vehicle => (
+                        <button
+                            key={vehicle.id}
+                            onClick={() => navigate(`/vehicle/${vehicle.id}`)}
+                            className="flex flex-row items-center w-full bg-bg-card rounded-2xl p-4 border border-border hover:border-border-subtle active:scale-[0.99] transition-all duration-150 text-left"
+                        >
+                            {/* Alert dot */}
+                            <div
+                                className="w-2.5 h-2.5 rounded-full flex-shrink-0 mr-4"
+                                style={{ backgroundColor: vehicle.alertColor }}
+                            />
+
+                            <div className="flex flex-col flex-1 min-w-0">
+                                <span className="text-text-primary font-semibold text-sm truncate">
+                                    {vehicle.brand} {vehicle.model}
+                                </span>
+                                <span className="text-text-secondary text-xs mt-0.5">
+                                    {vehicle.currentMileage.toLocaleString()} km
+                                </span>
+                                <span
+                                    className="text-xs mt-1 font-medium"
+                                    style={{ color: vehicle.alertColor }}
+                                >
+                                    {translateAlertMessage(vehicle.alertMessage ?? '')}
                                 </span>
                             </div>
-                            <div className={`rounded-full w-4 h-4`} style = { {
-                                backgroundColor: vehicle.alertColor
-                            }}></div>
-                        </div>
-                      })
-                    }
-                    </div>
-                    <AppButton className="flex h-12.5 items-center justify-center rounded-xl font-semibold" onClick={()=>{navigate("/vehicle")}} startIcon={<PlusIcon className="w-4 h-4"/>} text={"Adicionar Carro"} type={"Primary"}/>
-                </div>
 
+                            <ChevronRightIcon className="w-4 h-4 text-text-muted flex-shrink-0 ml-2" />
+                        </button>
+                    ))}
+
+                    <button
+                        onClick={() => navigate('/vehicle')}
+                        className="flex items-center justify-center gap-2 w-full bg-brand hover:bg-brand/90 active:scale-[0.99] text-bg-card font-semibold rounded-2xl p-4 transition-all duration-150"
+                    >
+                        <PlusIcon className="w-4 h-4" />
+                        <span className="text-sm">Adicionar Carro</span>
+                    </button>
+                </div>
             </div>
+        </div>
+    )
 }
 
 export default DashboardPage
