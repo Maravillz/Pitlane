@@ -73,7 +73,7 @@ const RegisterMileageModal = ({ vehicleId, currentMileage, onClose, onSuccess }:
                 {error && <p className="text-[#e74c3c] text-sm">{error}</p>}
 
                 <button
-                    className="bg-[#f5a623] text-[#1a1a1a] rounded-xl py-3 font-semibold disabled:opacity-60"
+                    className="bg-brand text-bg-card rounded-xl py-3 font-semibold disabled:opacity-60"
                     onClick={handleSubmit}
                     disabled={loading}
                 >

@@ -140,7 +140,7 @@ const Form = <T extends Record<string, any>>({
             {!hideSubmit && (
                 <button
                     type="submit"
-                    className="bg-[#f5a623] text-[#1a1a1a] rounded-xl p-3.5 mt-2 text-base font-semibold disabled:opacity-60"
+                    className="bg-brand text-[#1a1a1a] rounded-xl p-3.5 mt-2 text-base font-semibold disabled:opacity-60"
                     disabled={loading}
                 >
                     {loading ? 'Loading...' : t('form.submit')}

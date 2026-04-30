@@ -55,72 +55,60 @@ const EditVehicleModal = ({ vehicleId, brand, model, year, plate, onClose, onSuc
         }
     }
 
-    return <div
-        className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"
-        onClick={onClose}>
-        <div
-            className="bg-[#1e1e1e] rounded-t-2xl w-[90%] p-6 flex flex-col gap-4"
-            onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center">
-                <span className="text-[#ccc] font-medium">{t('updateVehicle.title')}</span>
-                <button onClick={onClose} className="text-[#888] text-xl">✕</button>
-            </div>
+    const inputClass = "bg-bg-input border border-border rounded-xl text-text-primary px-4 py-3 text-sm placeholder:text-text-muted focus:outline-none focus:border-brand transition-colors w-full"
+    const labelClass = "text-text-primary text-sm font-medium"
 
-            <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-sm">{t('updateVehicle.brand')}</label>
-                <input
-                    type="text"
-                    className="bg-[#2e2e2e] border border-[#3a3a3a] rounded-lg text-white px-4 py-3"
-                    placeholder={`${brand}`}
-                    value={newBrand ?? ''}
-                    onChange={e => setNewBrand(e.target.value)}
-                />
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-sm">{t('updateVehicle.model')}</label>
-                <input
-                    type="text"
-                    className="bg-[#2e2e2e] border border-[#3a3a3a] rounded-lg text-white px-4 py-3"
-                    placeholder={`${model}`}
-                    value={newModel ?? ''}
-                    onChange={e => setNewModel(e.target.value)}
-                />
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-sm">{t('updateVehicle.year')}</label>
-                <input
-                    type="number"
-                    className="bg-[#2e2e2e] border border-[#3a3a3a] rounded-lg text-white px-4 py-3"
-                    placeholder={`${year}`}
-                    value={newYear ?? ''}
-                    onChange={e => setNewYear(e.target.value === '' ? year : Number(e.target.value))}
-                />
-            </div>
-            <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-sm">{t('updateVehicle.plate')}</label>
-                <input
-                    type="text"
-                    className="bg-[#2e2e2e] border border-[#3a3a3a] rounded-lg text-white px-4 py-3"
-                    placeholder={`${plate}`}
-                    value={newPlate ?? ''}
-                    onChange={e => setNewPlate(e.target.value)}
-                />
-            </div>
-
-
-            {error && <p className="text-[#e74c3c] text-sm">{error}</p>}
-
-            <button
-                className="bg-[#f5a623] text-[#1a1a1a] rounded-xl py-3 font-semibold disabled:opacity-60"
-                onClick={handleSubmit}
-                disabled={loading}
+    return (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-end items-center justify-center flex-wrap content-center py-4" onClick={onClose}>
+            <div
+                className="bg-bg-card rounded-3xl md:rounded-3xl w-[90%] md:max-w-sm p-6 flex flex-col gap-4 border border-border border-b-0 md:border-b"
+                onClick={e => e.stopPropagation()}
             >
-                {loading ? t('common.loading') : t('updateVehicle.confirm')}
-            </button>
+                <div className="flex justify-between items-center mb-1">
+                    <h3 className="text-text-primary font-bold text-base">{t('updateVehicle.title')}</h3>
+                    <button onClick={onClose} className="text-text-muted hover:text-text-primary text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-border">
+                        ✕
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1.5">
+                        <label className={labelClass}>{t('updateVehicle.brand')}</label>
+                        <input type="text" className={inputClass} value={newBrand} onChange={e => setNewBrand(e.target.value)} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className={labelClass}>{t('updateVehicle.model')}</label>
+                        <input type="text" className={inputClass} value={newModel} onChange={e => setNewModel(e.target.value)} />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1.5">
+                        <label className={labelClass}>{t('updateVehicle.year')}</label>
+                        <input type="number" className={inputClass} value={newYear} onChange={e => setNewYear(e.target.value === '' ? year : Number(e.target.value))} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className={labelClass}>{t('updateVehicle.plate')}</label>
+                        <input type="text" className={inputClass} value={newPlate} onChange={e => setNewPlate(e.target.value)} />
+                    </div>
+                </div>
+
+                {error && (
+                    <p className="text-alert-critical text-sm bg-alert-critical-bg px-4 py-2.5 rounded-xl">
+                        {error}
+                    </p>
+                )}
+
+                <button
+                    className="bg-brand hover:bg-brand/90 active:scale-[0.99] text-bg-card rounded-xl py-3.5 font-bold text-sm disabled:opacity-50 transition-all mt-1"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading ? t('common.loading') : t('updateVehicle.confirm')}
+                </button>
+            </div>
         </div>
-    </div>
+    )
 }
 
 export default EditVehicleModal;
