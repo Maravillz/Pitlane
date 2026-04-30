@@ -28,25 +28,39 @@ const Navbar = () => {
 
 
     return (
-        <nav
-            className="md:relative top-0 absolute w-screen h-[9%] z-50" >
-            <div className="mx-auto px-6 lg:px-8">
-                <div className="relative flex h-16 items-center justify-between">
-                    <div className="md:hidden  flex flex-1 items-center justify-start sm:items-stretch sm:justify-start">
+        <nav className="sticky top-0 z-30 w-full bg-bg-page/80 backdrop-blur-md border-b border-border/50 lg:h-[7%]">
+            <div className="px-5 md:px-8 max-w-4xl mx-auto lg:mx-2 lg:max-w-full">
+                <div className="flex h-14 items-center justify-between">
 
-                        {/* Decides between having a return icon, nothing or the app icon */}
-                        {hasReturn ? (<ArrowLeftIcon className="w-6 fill-[#CCC]" onClick={() => {navigate(-1)}}/>) :
-                            hasNoIcon ?
-                                <Link to="/"></Link> :
-                                <Link to="/" className="text-[#f5a623] font-bold text-2xl">Pitlane</Link>}
+                    {/* Left — logo or back arrow (mobile only) */}
+                    <div className="flex items-center">
+                        <div className="md:hidden">
+                            {hasReturn ? (
+                                <button
+                                    onClick={() => navigate(-1)}
+                                    className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
+                                    <ArrowLeftIcon className="w-5 h-5" />
+                                </button>
+                            ) : hasNoIcon ? (
+                                <Link to="/" />
+                            ) : (
+                                <Link to="/" className="text-brand font-black text-xl tracking-tight">
+                                    Pitlane
+                                </Link>
+                            )}
+                        </div>
+                        {/* Desktop: brand is in sidebar, show nothing here */}
+                        <div className="hidden md:block" />
                     </div>
 
-                    <div className="absolute flex flex-row justify-around w-fit inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                        <LanguageToggle/>
-
-                        {/* Prompts the login icon if the user is not logged in except if it is the login page */}
-                        {isLoginPage ? null :
-                            (isAuthenticated ? <ProfileDropdown/> : <AppButton text={"Login"} type={"Secondary"} onClick={() => navigate("/login")}/>)}
+                    {/* Right — language + profile */}
+                    <div className="flex items-center gap-2">
+                        <LanguageToggle />
+                        {isLoginPage ? null : (
+                            isAuthenticated
+                                ? <ProfileDropdown />
+                                : <AppButton text="Login" type="Secondary" onClick={() => navigate('/login')} />
+                        )}
                     </div>
                 </div>
             </div>

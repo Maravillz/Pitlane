@@ -34,7 +34,7 @@ const ProfileDropdown = () => {
                 <img
                     alt=""
                     src={getDefaultAvatar(user?.displayName ?? 'U T')}
-                    className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
+                    className="lg:size-10 lg:mt-5 size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                 />
             </MenuButton>
 

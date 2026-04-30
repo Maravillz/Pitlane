@@ -39,12 +39,12 @@ const LanguageToggle = () => {
     return <Menu as="div" className="relative ml-3 pr-2">
             <MenuButton as="div" className="relative flex rounded-full">
                 <AppButton
-                    className="rounded-md px-2 py-1.5 leading-none font-medium flex flex-row items-center justify-center text-sm"
+                    className="lg:mt-6 lg:text-md rounded-md px-2 py-1.5 leading-none font-medium flex flex-row items-center justify-center text-sm"
                     textColor={"#FFFFFF"}
                     onClick={() => {}}
                     startIcon={<img src={currentLang.flag}
                                     alt={currentLang.code}
-                                    className="w-4 h-2 mr-2" />}
+                                    className="lg:w-4 lg:h-3 w-4 h-2 mr-2" />}
                     text={currentLang.code.split('-')[0].toUpperCase()}
                     type={"Tertiary"}/>
             </MenuButton>
