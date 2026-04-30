@@ -129,7 +129,7 @@ const CreateMaintenance = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-5">
             <Form
                 fields={fields}
                 form={form}
@@ -140,21 +140,16 @@ const CreateMaintenance = () => {
                 hideSubmit={true}
             />
 
-            { /* Photo submission */ }
-
+            {/* Photos */}
             <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-base">{t('createMaintenance.photos')}</label>
-                <div className="flex flex-row gap-2 flex-wrap">
+                <label className="text-text-primary text-sm font-medium">{t('createMaintenance.photos')}</label>
+                <div className="flex flex-row gap-3 flex-wrap">
                     {photos.map((photo, i) => (
-                        <div key={i} className="relative w-24 h-24 rounded-xl overflow-hidden bg-[#2e2e2e]">
-                            <img
-                                src={URL.createObjectURL(photo)}
-                                className="w-full h-full object-cover"
-                                alt=""
-                            />
+                        <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-border">
+                            <img src={URL.createObjectURL(photo)} className="w-full h-full object-cover" alt="" />
                             <button
                                 type="button"
-                                className="absolute top-1 right-1 bg-[#1a1a1a] rounded-full w-5 h-5 flex items-center justify-center text-[#ccc] text-xs"
+                                className="absolute top-1 right-1 bg-bg-page/80 rounded-full w-5 h-5 flex items-center justify-center text-text-secondary text-xs"
                                 onClick={() => handlePhotoRemove(i)}
                             >
                                 ✕
@@ -162,42 +157,46 @@ const CreateMaintenance = () => {
                         </div>
                     ))}
                     {photos.length < 3 && (
-                        <label className="w-24 h-24 rounded-xl bg-[#2e2e2e] border border-dashed border-[#3a3a3a] flex items-center justify-center cursor-pointer">
-                            <span className="text-[#555] text-2xl">+</span>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                className="hidden"
-                                onChange={handlePhotoAdd}
-                            />
+                        <label className="w-20 h-20 rounded-xl bg-bg-card border border-dashed border-border-subtle flex items-center justify-center cursor-pointer hover:border-brand transition-colors">
+                            <span className="text-text-muted text-2xl">+</span>
+                            <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoAdd} />
                         </label>
                     )}
                 </div>
             </div>
 
-            { /* Alert creation prompt */ }
-
+            {/* Alert toggle */}
             <div className="flex flex-col gap-2">
-                <label className="text-[#ccc] text-base">{t('createMaintenance.createAlert')}</label>
-                <div className="flex flex-row items-center justify-between bg-[#2e2e2e] border border-[#3a3a3a] rounded-lg px-4 py-3">
-                    <span className="text-[#ccc] text-sm">{alertLabel()}</span>
+                <label className="text-text-primary text-sm font-medium">{t('createMaintenance.createAlert')}</label>
+                <div className="flex items-center justify-between bg-bg-card border border-border rounded-xl px-4 py-3.5">
+                    <span className="text-text-secondary text-sm flex-1 mr-4">{alertLabel()}</span>
                     <button
                         type="button"
-                        className={`w-12 h-6 rounded-full transition-colors relative ${form.createAlert ? 'bg-[#f5a623]' : 'bg-[#3a3a3a]'}`}
+                        className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${form.createAlert ? 'bg-brand' : 'bg-border'}`}
                         onClick={() => setForm(prev => ({ ...prev, createAlert: !prev.createAlert }))}
                     >
-                        <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.createAlert ? 'left-7' : 'left-1'}`} />
+                        <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-200 ${form.createAlert ? 'left-6' : 'left-1'}`} />
                     </button>
                 </div>
             </div>
 
+            {error && (
+                <p className="text-alert-critical text-sm bg-alert-critical-bg px-4 py-2.5 rounded-xl">
+                    {error}
+                </p>
+            )}
+
             <button
-                className="bg-[#f5a623] text-[#1a1a1a] rounded-xl p-3.5 font-semibold disabled:opacity-60"
+                className="bg-brand hover:bg-brand/90 active:scale-[0.99] text-bg-card rounded-xl py-3.5 font-bold text-sm disabled:opacity-50 transition-all"
                 onClick={handleSubmit}
                 disabled={loading}
             >
-                {loading ? t('common.loading') : t('form.submit')}
+                {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                        <span className="w-4 h-4 border-2 border-bg-card border-t-transparent rounded-full animate-spin" />
+                        {t('common.loading')}
+                    </span>
+                ) : t('form.submit')}
             </button>
         </div>
     )

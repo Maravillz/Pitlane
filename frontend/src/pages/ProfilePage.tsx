@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {vehicleService} from "../services/vehicleService.ts";
 import {costsService} from "../services/costsService.ts";
 import {getDefaultAvatar} from "../models/user.ts";
+import {ChevronRightIcon} from "@heroicons/react/16/solid";
 
 /**
  * Represents the user profile page
@@ -37,61 +38,64 @@ const ProfilePage = () => {
     ]
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-6">
 
-            <div className="flex flex-col items-center py-8 gap-2">
-                <img
-                    src={getDefaultAvatar(user?.displayName ?? 'U T')}
-                    className="w-24 h-24 rounded-full"
-                    alt=""
-                />
-                <span className="text-[#ccc] text-xl font-semibold mt-2">{user?.displayName}</span>
-                <span className="text-[#888] text-sm">{user?.email}</span>
+            {/* Avatar + info */}
+            <div className="flex flex-col items-center py-8 gap-3">
+                <div className="relative">
+                    <img
+                        src={getDefaultAvatar(user?.displayName ?? 'U T')}
+                        className="w-20 h-20 rounded-full ring-2 ring-brand/20"
+                        alt=""
+                    />
+                    <div className="absolute bottom-0 right-0 w-5 h-5 bg-alert-none rounded-full border-2 border-bg-page" />
+                </div>
+                <div className="text-center">
+                    <p className="text-text-primary text-lg font-bold">{user?.displayName}</p>
+                    <p className="text-text-secondary text-sm">{user?.email}</p>
+                </div>
             </div>
 
-            { /* The stats cards for the account */ }
-
+            {/* Stats */}
             {!loading && stats && (
-                <div className="flex flex-row gap-3 mb-6">
-                    <div className="flex flex-col items-center justify-center flex-1 bg-[#1a1a1a] rounded-xl p-4">
-                        <span className="text-[#ccc] text-xl font-bold">{stats.vehicles}</span>
-                        <span className="text-[#888] text-xs mt-1">{t('profile.vehicles')}</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center flex-1 bg-[#1a1a1a] rounded-xl p-4">
-                        <span className="text-[#ccc] text-xl font-bold">{(stats.totalCosts / 100).toFixed(0)}€</span>
-                        <span className="text-[#888] text-xs mt-1">{t('profile.totalCosts')}</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center flex-1 bg-[#1a1a1a] rounded-xl p-4">
-                        <span className="text-[#ccc] text-xl font-bold">{stats.maintenances}</span>
-                        <span className="text-[#888] text-xs mt-1">{t('profile.maintenances')}</span>
-                    </div>
+                <div className="grid grid-cols-3 gap-3">
+                    {[
+                        { value: stats.vehicles, label: t('profile.vehicles') },
+                        { value: `${(stats.totalCosts / 100).toFixed(0)}€`, label: t('profile.totalCosts'), highlight: true },
+                        { value: stats.maintenances, label: t('profile.maintenances') },
+                    ].map((stat, i) => (
+                        <div key={i} className="flex flex-col items-center justify-center bg-bg-card rounded-2xl p-4 border border-border">
+                            <span className={`text-xl font-bold ${stat.highlight ? 'text-brand' : 'text-text-primary'}`}>
+                                {stat.value}
+                            </span>
+                            <span className="text-xs text-text-secondary text-center mt-1 leading-tight">{stat.label}</span>
+                        </div>
+                    ))}
                 </div>
             )}
 
-            { /* The page navigate buttons */ }
-
-            <div className="flex flex-col gap-3 rounded-xl ">
+            {/* Menu items */}
+            <div className="flex flex-col bg-bg-card rounded-2xl border border-border overflow-hidden">
                 {menuItems.map((item, i) => (
                     <button
                         key={i}
-                        className="bg-[#1a1a1a] rounded-xl flex flex-row items-center justify-between px-4 py-4 border-b border-[#2e2e2e] last:border-0"
+                        className={`flex items-center justify-between px-5 py-4 hover:bg-border active:bg-border transition-colors
+                            ${i < menuItems.length - 1 ? 'border-b border-border' : ''}`}
                         onClick={item.onClick}
                     >
-                        <div className="flex flex-row items-center gap-3">
-                            <span>{item.icon}</span>
-                            <span className="text-[#ccc] text-sm">{item.label}</span>
+                        <div className="flex items-center gap-3 text-text-primary">
+                            <span className="text-text-secondary">{item.icon}</span>
+                            <span className="text-sm font-medium">{item.label}</span>
                         </div>
-                        <span className="text-[#555]">›</span>
+                        <ChevronRightIcon className="w-4 h-4 text-text-muted" />
                     </button>
                 ))}
             </div>
 
+            {/* Logout */}
             <button
-                className="mx-4 mt-6 py-3 rounded-xl border border-[#be525d] text-[#be525d] text-sm font-medium"
-                onClick={() => {
-                    logout()
-                    navigate('/login')
-                }}
+                className="w-full py-3.5 rounded-2xl border border-alert-critical/40 text-alert-critical text-sm font-semibold hover:bg-alert-critical-bg active:scale-[0.99] transition-all duration-150"
+                onClick={() => { logout(); navigate('/login') }}
             >
                 {t('nav.signOut')}
             </button>
