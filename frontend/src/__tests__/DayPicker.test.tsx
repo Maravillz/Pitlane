@@ -125,6 +125,6 @@ describe('DayPicker', () => {
 
         const dayButton = screen.getByText('1')
         fireEvent.click(dayButton)
-        expect(dayButton.className).toContain('bg-[#f5a623]')
+        expect(dayButton.className).toContain('bg-brand')
     })
 })

@@ -79,6 +79,6 @@ describe('YearPicker', () => {
         const yearButton = screen.getByText(String(rangeStart))
 
         fireEvent.click(yearButton)
-        expect(yearButton.className).toContain('bg-[#f5a623]')
+        expect(yearButton.className).toContain('bg-brand')
     })
 })
