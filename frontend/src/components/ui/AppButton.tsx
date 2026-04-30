@@ -12,9 +12,9 @@ interface PrimaryButtonConfig {
     className?: string
 }
 
-const primaryColor: string = "#f5a623"
-const secondaryColor: string = "#242424"
-const tertiaryColor: string = "#767c7f"
+const primaryColor: string = "var(--color-brand)"
+const secondaryColor: string = "var(--color-bg-card)"
+const tertiaryColor: string = "var(--color-text-muted)"
 
 /**
  * Represents a generic button component

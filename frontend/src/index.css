@@ -1,5 +1,108 @@
 @import "tailwindcss";
 
-body{
-    background-color: #0f0f0f;
+@theme {
+    /* Brand */
+    --color-brand: #f59e0b;
+
+    /* Backgrounds */
+    --color-bg-page: #0d0d0d;
+    --color-bg-card: #161616;
+    --color-bg-input: #1e1e1e;
+
+    /* Borders */
+    --color-border: #252525;
+    --color-border-subtle: #333333;
+
+    /* Text */
+    --color-text-primary: #e5e5e5;
+    --color-text-secondary: #888888;
+    --color-text-muted: #4a4a4a;
+
+    /* Alert status */
+    --color-alert-critical: #e05260;
+    --color-alert-warning: #f59e0b;
+    --color-alert-none: #22c55e;
+
+    /* Alert backgrounds */
+    --color-alert-critical-bg: #1f0a0c;
+    --color-alert-warning-bg: #1f1400;
+    --color-alert-none-bg: #071a0e;
+
+    /* Semantic */
+    --color-error: #e05260;
+    --color-success: #22c55e;
+}
+
+/* CSS vars for inline styles and SVGs */
+:root {
+    --color-brand: #f59e0b;
+    --color-bg-page: #0d0d0d;
+    --color-bg-card: #161616;
+    --color-bg-input: #1e1e1e;
+    --color-border: #252525;
+    --color-border-subtle: #333333;
+    --color-text-primary: #e5e5e5;
+    --color-text-secondary: #888888;
+    --color-text-muted: #4a4a4a;
+    --color-alert-critical: #e05260;
+    --color-alert-warning: #f59e0b;
+    --color-alert-none: #22c55e;
+    --color-alert-critical-bg: #1f0a0c;
+    --color-alert-warning-bg: #1f1400;
+    --color-alert-none-bg: #071a0e;
+    --color-error: #e05260;
+    --color-success: #22c55e;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@layer base {
+    html {
+        font-size: 16px;
+    }
+
+    @media (min-width: 1024px) {
+        html {
+            font-size: 18px;
+        }
+    }
+}
+
+body {
+    background-color: var(--color-bg-page);
+    color: var(--color-text-primary);
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Hide scrollbar but keep scroll */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* Number inputs — remove arrows */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+/* Select — dark styling */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px !important;
+}
+
+select option {
+    background-color: var(--color-bg-card);
+    color: var(--color-text-primary);
 }

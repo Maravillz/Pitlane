@@ -18,22 +18,26 @@ interface AlertCardProps {
  * @param borderColor The left border colour indicating severity. Defaults to green.
  * @param children Optional action elements rendered on the right side of the card
  */
-const AlertCard = ({ maintenanceType, intervalKm, intervalDays, borderColor = '#10b981', children }: AlertCardProps) => {
+const AlertCard = ({ maintenanceType, intervalKm, intervalDays, borderColor = 'var(--color-alert-none)', children }: AlertCardProps) => {
     const { t } = useTranslation()
 
     const intervalText =
         (intervalKm != null ? `${t('carDetail.in')} ${intervalKm} km` : '') +
-        (intervalKm != null && intervalDays != null ? ' - ' : '') +
-        (intervalDays != null ? `${t('carDetail.next')} ${intervalDays}` : '')
+        (intervalKm != null && intervalDays != null ? ' · ' : '') +
+        (intervalDays != null ? `${t('carDetail.next')} ${intervalDays} ${t('carDetail.days')}` : '')
 
     return (
         <div
-            className="flex flex-row items-center justify-between bg-[#1a1a1a] p-2 rounded-r-xl border-l-4"
-            style={{ borderColor }}
+            className="flex flex-row items-center justify-between bg-bg-card rounded-r-2xl rounded-l-none border-l-[3px] px-4 py-3.5 border border-border border-l-0 hover:border-border-subtle transition-colors"
+            style={{ borderLeftColor: borderColor }}
         >
-            <div className="flex flex-col">
-                <span className="text-sm text-[#CCC]">{t(`maintenanceTypes.${maintenanceType}`)}</span>
-                <span className="text-sm text-[#888]">{intervalText}</span>
+            <div className="flex flex-col gap-0.5">
+                <span className="text-sm text-text-primary font-medium">
+                    {t(`maintenanceTypes.${maintenanceType}`)}
+                </span>
+                {intervalText && (
+                    <span className="text-xs text-text-secondary">{intervalText}</span>
+                )}
             </div>
             {children}
         </div>
