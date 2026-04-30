@@ -6,6 +6,7 @@ WORKDIR /app
 # Copy maven wrapper and pom first for layer caching
 COPY mvnw .
 COPY .mvn .mvn
+RUN chmod +x mvnw
 COPY pom.xml .
 
 # Download dependencies (cached if pom.xml unchanged)
@@ -27,6 +28,6 @@ USER pitlane
 # Copy jar from builder
 COPY --from=builder /app/target/pitlane-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
+EXPOSE ${PORT:-8080}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
