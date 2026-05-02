@@ -12,6 +12,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "i18next": "^26.0.4",
@@ -21,6 +24,7 @@
     "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
