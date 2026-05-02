@@ -80,7 +80,8 @@ public class WebSecurityConfig {
                 "https://pitlane-blush.vercel.app",
                 "http://localhost:5173",
                 "capacitor://localhost",
-                "http://localhost"
+                "http://localhost",
+                "https://localhost"
         ));
 
         config.setAllowedMethods(List.of(
