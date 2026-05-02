@@ -77,7 +77,10 @@ public class WebSecurityConfig {
         config.setAllowedOrigins(List.of(
                 "https://pitlaneapp.net",
                 "https://www.pitlaneapp.net",
-                "https://pitlane-blush.vercel.app"
+                "https://pitlane-blush.vercel.app",
+                "http://localhost:5173",
+                "capacitor://localhost",
+                "http://localhost"
         ));
 
         config.setAllowedMethods(List.of(
