@@ -21,11 +21,6 @@ const ProfileDropdown = () => {
 
     const { t } = useTranslation()
 
-    const menuItems: DropdownMenuItem [] = [
-        {name: t("nav.profile"), onClick: () => { navigate("/profile") }},
-        {name: t("nav.signOut"), onClick: () => handleLogout}
-    ]
-
     const handleLogout = async () => {
         const isDemo = localStorage.getItem('isDemo') === 'true'
         if (isDemo) {
@@ -41,9 +36,8 @@ const ProfileDropdown = () => {
 
     return (
         <Menu as="div" className="relative ml-3">
-            <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 ">
+            <MenuButton className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2">
                 <span className="absolute -inset-1.5" />
-                {/* Defaults to UT (User Testing) if the user display name is not read properly */}
                 <img
                     alt=""
                     src={getDefaultAvatar(user?.displayName ?? 'U T')}
@@ -53,21 +47,18 @@ const ProfileDropdown = () => {
 
             <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md py-1 shadow-lg outline outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in bg-[#242424] dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
             >
-                {menuItems.map((menuItem: DropdownMenuItem) =>{
-                    return (
-                        <MenuItem>
-                            <a
-                                onClick={menuItem.onClick}
-                                className="block px-4 py-2 text-sm bg-[#242424] text-[#CCC]"
-                            >
-                                {menuItem.name}
-                            </a>
-                        </MenuItem>
-                    )
-                })}
-
+                <MenuItem>
+                    <a onClick={() => navigate('/profile')} className="block px-4 py-2 text-sm bg-[#242424] text-[#CCC] cursor-pointer">
+                        {t('nav.profile')}
+                    </a>
+                </MenuItem>
+                <MenuItem>
+                    <a onClick={handleLogout} className="block px-4 py-2 text-sm bg-[#242424] text-[#CCC] cursor-pointer">
+                        {t('nav.signOut')}
+                    </a>
+                </MenuItem>
             </MenuItems>
         </Menu>
     )
