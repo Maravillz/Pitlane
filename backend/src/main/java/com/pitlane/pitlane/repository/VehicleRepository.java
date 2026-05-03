@@ -25,4 +25,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
      * @return A list of vehicles, empty if there is no vehicle associated
      */
     List<Vehicle> findAllByUser(User user);
+
+    void deleteAllByUser(User user);
 }

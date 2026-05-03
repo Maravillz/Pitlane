@@ -57,6 +57,10 @@ const LoginPage = () => {
         setDemoLoading(true)
         setError(null)
         try {
+            // Regista início de sessão
+            await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/start`, {
+                method: 'POST'
+            })
             await doLogin(DEMO_EMAIL, DEMO_PASSWORD, true)
         } catch {
             setError('Não foi possível carregar a demonstração. Tenta novamente.')

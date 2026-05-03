@@ -17,6 +17,7 @@ const ProfilePage = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [stats, setStats] = useState<{ vehicles: number, totalCosts: number, maintenances: number } | null>(null)
+    const isDemo = localStorage.getItem('isDemo') === 'true'
 
     useEffect(() => {
         Promise.all([
@@ -36,6 +37,18 @@ const ProfilePage = () => {
         { icon: '', label: t('profile.alerts'), onClick: () => navigate('/alerts') },
         { icon: '', label: t('profile.myVehicles'), onClick: () => navigate('/dashboard') },
     ]
+
+    const handleLogout = async () => {
+        if (isDemo) {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/end`, {
+                method: 'POST'
+            })
+            localStorage.removeItem('isDemo')
+        }
+        localStorage.removeItem('token')
+        logout()
+        navigate('/login')
+    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -95,7 +108,7 @@ const ProfilePage = () => {
             {/* Logout */}
             <button
                 className="w-full py-3.5 rounded-2xl border border-alert-critical/40 text-alert-critical text-sm font-semibold hover:bg-alert-critical-bg active:scale-[0.99] transition-all duration-150"
-                onClick={() => { logout(); navigate('/login') }}
+                onClick={() => handleLogout()}
             >
                 {t('nav.signOut')}
             </button>
