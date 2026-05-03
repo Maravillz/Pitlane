@@ -17,14 +17,27 @@ interface DropdownMenuItem {
 const ProfileDropdown = () => {
 
     const navigate = useNavigate()
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const { t } = useTranslation()
 
     const menuItems: DropdownMenuItem [] = [
         {name: t("nav.profile"), onClick: () => { navigate("/profile") }},
-        {name: t("nav.signOut"), onClick: () => { localStorage.removeItem("token"); navigate(0) }}
+        {name: t("nav.signOut"), onClick: () => handleLogout}
     ]
+
+    const handleLogout = async () => {
+        const isDemo = localStorage.getItem('isDemo') === 'true'
+        if (isDemo) {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/end`, {
+                method: 'POST'
+            })
+            localStorage.removeItem('isDemo')
+        }
+        localStorage.removeItem('token')
+        logout()
+        navigate('/login')
+    }
 
     return (
         <Menu as="div" className="relative ml-3">
