@@ -29,4 +29,10 @@ public interface AlertRepository extends JpaRepository<Alert, UUID> {
     @Query("SELECT a FROM Alert a JOIN a.maintenance m " +
             "WHERE m.vehicle = :vehicle AND m.type = :type AND a.resolvedAt IS NULL")
     Optional<Alert> findActiveByVehicleAndType(@Param("vehicle") Vehicle vehicle, @Param("type") Maintenance.MaintenanceType type);
+
+    /**
+     * Deletes all alerts associated to a maintenance — used for demo account reset
+     * @param maintenance The maintenance whose alerts will be deleted
+     */
+    void deleteAllByMaintenance(Maintenance maintenance);
 }

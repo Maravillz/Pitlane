@@ -1,12 +1,10 @@
 package com.pitlane.pitlane.repository;
 
 import com.pitlane.pitlane.model.Maintenance;
-import com.pitlane.pitlane.model.User;
 import com.pitlane.pitlane.model.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +26,11 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, UUID> 
      * @param vehicle The given vehicle associated to the maintenance
      * @return A maintenance if any is present
      */
-    Optional<Maintenance> findByTypeAndDateAndVehicle(Maintenance.MaintenanceType type, LocalDate date, Vehicle vehicle
-    );
+    Optional<Maintenance> findByTypeAndDateAndVehicle(Maintenance.MaintenanceType type, LocalDate date, Vehicle vehicle);
+
+    /**
+     * Deletes all maintenances associated to a vehicle — used for demo account reset
+     * @param vehicle The vehicle whose maintenances will be deleted
+     */
+    void deleteAllByVehicle(Vehicle vehicle);
 }
