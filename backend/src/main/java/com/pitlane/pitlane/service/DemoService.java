@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /** Service responsible for demo account session tracking and scheduled reset */
@@ -93,9 +94,28 @@ public class DemoService {
     @Scheduled(cron = "0 0 20 * * *")
     @Transactional
     public void scheduledReset() {
-        log.info("[DEMO] Scheduled reset starting at {}", LocalDateTime.now());
+        log.info("[DEMO] Scheduled reset check at {}", LocalDateTime.now());
 
-        // Close open session
+        // Verifica se houve alterações hoje
+        boolean hasChangesToday = demoSessionRepository
+                .findTopByEndedAtIsNullOrderByStartedAtDesc()
+                .map(session -> !demoChangeRepository.findAllBySession(session).isEmpty())
+                .orElse(false);
+
+        // Verifica também sessões fechadas hoje com alterações
+        if (!hasChangesToday) {
+            hasChangesToday = demoSessionRepository.findAll().stream()
+                    .filter(s -> s.getStartedAt().toLocalDate().equals(LocalDate.now()))
+                    .anyMatch(s -> !demoChangeRepository.findAllBySession(s).isEmpty());
+        }
+
+        if (!hasChangesToday) {
+            log.info("[DEMO] No changes today — skipping reset");
+            return;
+        }
+
+        log.info("[DEMO] Changes detected — starting reset");
+
         demoSessionRepository.findTopByEndedAtIsNullOrderByStartedAtDesc()
                 .ifPresent(session -> {
                     session.setEndedAt(LocalDateTime.now());
