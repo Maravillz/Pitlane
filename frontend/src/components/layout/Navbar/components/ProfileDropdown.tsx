@@ -1,14 +1,8 @@
 import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/react";
 import {useNavigate} from "react-router-dom";
-import type {MouseEventHandler} from "react";
 import {useTranslation} from "react-i18next";
 import {getDefaultAvatar} from "../../../../models/user.ts";
 import {useAuth} from "../../../../hooks/useAuth.ts";
-
-interface DropdownMenuItem {
-    name: string,
-    onClick: MouseEventHandler<HTMLAnchorElement>
-}
 
 /**
  * Represents the user icon that allows the user to click and a menu appears with actions
