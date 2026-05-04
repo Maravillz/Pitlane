@@ -1,74 +1,170 @@
-# Pitlane 🔧
+# Pitlane 
 
-> Car maintenance tracking app — know your car, own your maintenance.
+**Pitlane** is a digital garage — a full-stack web and mobile application that centralises all your vehicle maintenance responsibilities in one place. Track services, manage alerts for upcoming maintenance, and monitor costs across your entire fleet.
 
-![Java](https://img.shields.io/badge/Java_21-ED8B00?style=flat&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=flat&logo=spring&logoColor=white)
-![React](https://img.shields.io/badge/React_18-20232A?style=flat&logo=react&logoColor=61DAFB)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-316192?style=flat&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-
----
-
-## What is Pitlane?
-
-Pitlane is a mobile-first car maintenance management app built for DIY enthusiasts who want a centralised, structured record of everything they do to their vehicles.
-
-Track maintenance history, set km and date-based alerts, log costs, manage your tools, and never miss a service again — all in one place, designed to be used in the garage with dirty hands.
-
-> Personal project built to learn Java and Spring Boot, transitioning from a C#/.NET background. Designed and developed end-to-end as a portfolio piece.
-
----
-
-## Screenshots
-
-| Login | Dashboard | Vehicle |
-|-------|-----------|---------|
-| ![Login](docs/screens/01_login.png) | ![Dashboard](docs/screens/04_dashboard.png) | ![Vehicle](docs/screens/05_pagina_carro.png) |
-
-| New Maintenance | Alerts | Costs |
-|----------------|--------|-------|
-| ![Maintenance](docs/screens/09_nova_manutencao.png) | ![Alerts](docs/screens/12_alertas.png) | ![Costs](docs/screens/14_custos.png) |
-
----
-
-## Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Backend | Java 21 + Spring Boot 3 |
-| API | REST + Spring MVC |
-| Security | Spring Security + JWT + Google OAuth 2.0 |
-| ORM | Spring Data JPA + Hibernate |
-| Migrations | Flyway |
-| Database | PostgreSQL 16 |
-| Frontend | React 18 + Vite + React Router |
-| Storage | AWS S3 / Cloudflare R2 |
-| DevOps | Docker + Docker Compose |
-| API Docs | Swagger / OpenAPI 3 |
-| Version Control | Git + GitHub |
+**Live:** [pitlaneapp.net](https://www.pitlaneapp.net) — try it instantly with the **demo account**, no registration required.
 
 ---
 
 ## Features
 
-### Implemented
-- [ ] User authentication (register, login, JWT refresh, Google OAuth)
-- [ ] Garage management with multiple vehicles
-- [ ] Maintenance history per vehicle
-- [ ] Mileage tracking with history
-- [ ] Alert system by km and by date
-- [ ] Photo uploads per maintenance (before/after, receipts)
-- [ ] Cost tracking with dashboard by category and vehicle
-- [ ] Equipment management shared across vehicles
-- [ ] Guest mode with local temporary data
+- **Vehicle management** — add and manage multiple vehicles with mileage tracking
+- **Maintenance history** — log services with date, mileage, cost and notes
+- **Alert system** — automated CRITICAL / WARNING / NONE status based on km and time thresholds
+- **Cost dashboard** — spending breakdown by category and vehicle, filterable by month, year or all time
+- **Google OAuth2** — sign in with Google or with email/password
+- **Bilingual** — Portuguese and English (i18next)
+- **Mobile app** — Android app built with Capacitor
+- **Demo account** — isolated demo session with automatic data reset
 
-### Planned (v2)
-- [ ] YouTube tutorial search by vehicle + maintenance type
-- [ ] Part price search across multiple stores
-- [ ] Push notifications
-- [ ] Desktop web version
-- [ ] PDF report export
+---
+
+## Tech Stack
+
+### Backend
+| Technology | Usage |
+|---|---|
+| Java 21 | Primary language |
+| Spring Boot 3.5 | Application framework |
+| Spring MVC | REST API |
+| Spring Security | Authentication and authorisation |
+| JWT (jjwt 0.12) | Stateless token-based auth |
+| Google OAuth2 | Social login |
+| Spring Data JPA + Hibernate | ORM and data access |
+| Flyway | Database schema versioning |
+| PostgreSQL 16 | Primary database |
+| Docker | Containerisation |
+
+### Frontend
+| Technology | Usage |
+|---|---|
+| React 18 + Vite | UI framework and build tool |
+| TypeScript | Primary language |
+| Tailwind CSS v4 | Utility-first styling with CSS variables design system |
+| React Router | Client-side routing |
+| i18next | Internationalisation (PT/EN) |
+| Capacitor | Android app wrapper |
+
+### Testing
+| Layer | Framework | Tests |
+|---|---|---|
+| Services | JUnit 5 + Mockito | 44 |
+| Repositories | JUnit 5 + @DataJpaTest + H2 | 20 |
+| Controllers | JUnit 5 + MockMvc + Spring Security Test | 29 |
+| Frontend components | Jest + React Testing Library | 75 |
+| **Total** | | **168** |
+
+### Infrastructure
+| Service | Purpose |
+|---|---|
+| Railway | Backend + PostgreSQL hosting |
+| Vercel | Frontend hosting |
+| GitHub Actions | CI/CD |
+
+---
+
+## Architecture Decisions
+
+**JWT stateless** — no server-side session storage, scales horizontally without shared state. Trade-off: tokens cannot be invalidated before expiry, mitigated with short expiration and refresh token support.
+
+**DTOs on every API boundary** — decouples the API contract from the database schema, prevents lazy-loading serialisation issues, and keeps the response shape stable across internal refactors.
+
+**Flyway migrations** — every schema change is versioned and reproducible. Any developer can run `docker-compose up` and have a fully migrated database in seconds.
+
+**Costs stored in cents (Integer)** — avoids floating point precision issues. Frontend divides by 100 for display.
+
+**Alert status calculated server-side** — CRITICAL / WARNING / NONE computed in a single-pass loop over active alerts on every request, ensuring the frontend always receives pre-computed status without additional queries.
+
+**Mileage invariant enforced at model level** — `Vehicle.setCurrentMileage()` throws `IllegalArgumentException` if the new value is lower than the current one, preventing invalid state regardless of which service calls it.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Java 21
+- Node.js 20+
+- Docker and Docker Compose
+
+### Running locally
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/Maravillz/Pitlane.git
+cd Pitlane
+```
+
+**2. Start the database**
+```bash
+docker-compose up -d
+```
+
+**3. Configure the backend**
+
+Copy and fill in the environment variables:
+```bash
+cp backend/src/main/resources/application.properties.example backend/src/main/resources/application.properties
+```
+
+Required variables:
+```properties
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=pitlane
+DB_USER=pitlane
+DB_PASSWORD=pitlane
+
+# JWT — generate a secure random string (min 256 bits)
+jwt.secret=your-secret-here
+jwt.expiration=86400000
+
+# Google OAuth2 — create credentials at console.cloud.google.com
+spring.security.oauth2.client.registration.google.client-id=your-client-id
+spring.security.oauth2.client.registration.google.client-secret=your-client-secret
+
+# URLs
+app.frontend-url=http://localhost:5173
+app.backend-url=http://localhost:8081
+
+# Alert thresholds
+pitlane.alerts.warning-km-threshold=500
+pitlane.alerts.warning-days-threshold=15
+```
+
+**4. Start the backend**
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+Flyway will automatically run all migrations on startup.
+
+**5. Start the frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app will be available at `http://localhost:5173`.
+
+---
+
+## Running Tests
+
+**Backend (93 tests)**
+```bash
+cd backend
+./mvnw test
+```
+
+**Frontend (75 tests)**
+```bash
+cd frontend
+npm test
+```
 
 ---
 
@@ -76,158 +172,50 @@ Track maintenance history, set km and date-based alerts, log costs, manage your 
 
 ```
 Pitlane/
-├── backend/                    # Spring Boot application
-│   └── src/main/java/com/pitlane/
-│       ├── controller/         # REST endpoints
-│       ├── service/            # Business logic
-│       ├── repository/         # JPA repositories
-│       ├── model/              # JPA entities
-│       ├── dto/                # Request / response objects
-│       ├── config/             # Security, Swagger, S3 config
-│       └── exception/          # Global error handling
-│
-├── frontend/                   # React + Vite application
+├── backend/
+│   ├── src/main/java/com/pitlane/pitlane/
+│   │   ├── controller/     # REST endpoints
+│   │   ├── service/        # Business logic
+│   │   ├── repository/     # Data access
+│   │   ├── model/          # JPA entities
+│   │   ├── dto/            # Data transfer objects
+│   │   ├── security/       # JWT filter, auth entry point
+│   │   └── config/         # Security config, OAuth2 handler
+│   └── src/main/resources/
+│       └── db/migration/   # Flyway SQL migrations
+├── frontend/
 │   └── src/
-│       ├── pages/              # Route-level components
-│       ├── components/         # Reusable UI components
-│       ├── hooks/              # Custom React hooks
-│       ├── services/           # API calls
-│       └── context/            # Auth context
-│
-├── docs/                       # Project documentation
-│   ├── screens/                # App screenshots
-│   ├── wireframes/             # Low and high fidelity wireframes
-│   └── architecture/           # Architecture decisions
-│
-└── docker-compose.yml          # Local development environment
+│       ├── components/     # Reusable UI components
+│       ├── pages/          # Page-level components
+│       ├── services/       # API client functions
+│       ├── models/         # TypeScript interfaces
+│       ├── hooks/          # Custom React hooks
+│       ├── context/        # Auth context
+│       └── utils/          # Utility functions
+└── docker-compose.yml
 ```
-
----
-
-## Running Locally
-
-### Prerequisites
-
-- Java 21+
-- Node.js 18+
-- Docker + Docker Compose
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Maravillz/Pitlane.git
-cd Pitlane
-```
-
-### 2. Configure environment variables
-
-Copy the example env file and fill in the values:
-
-```bash
-cp .env.example .env
-```
-
-```env
-# Database
-POSTGRES_DB=pitlane
-POSTGRES_USER=pitlane
-POSTGRES_PASSWORD=your_password
-
-# JWT
-JWT_SECRET=your_secret_key_min_256_bits
-JWT_EXPIRATION_MS=604800000
-JWT_REFRESH_EXPIRATION_MS=2592000000
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# S3 / R2 Storage
-STORAGE_ACCESS_KEY=your_access_key
-STORAGE_SECRET_KEY=your_secret_key
-STORAGE_BUCKET=pitlane
-STORAGE_ENDPOINT=https://your-r2-endpoint.r2.cloudflarestorage.com
-```
-
-### 3. Start the services
-
-```bash
-docker-compose up -d
-```
-
-This starts:
-- **PostgreSQL** on `localhost:5432`
-- **Adminer** (database UI) on `localhost:8081`
-
-### 4. Start the backend
-
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-Backend runs on `http://localhost:8080`
-
-### 5. Start the frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs on `http://localhost:5173`
-
-### 6. Access the app
-
-| Service | URL |
-|---------|-----|
-| App | http://localhost:5173 |
-| API | http://localhost:8080 |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
-| Adminer | http://localhost:8081 |
 
 ---
 
 ## API Documentation
 
-The REST API is fully documented with Swagger / OpenAPI 3.
+Swagger UI is available in development mode at `http://localhost:8081/swagger-ui/index.html`.
 
-After starting the backend, visit: `http://localhost:8080/swagger-ui.html`
-
-Main endpoint groups:
-
-| Group | Base path |
-|-------|-----------|
-| Auth | `/api/auth` |
-| Vehicles | `/api/vehicles` |
-| Maintenances | `/api/maintenances` |
-| Alerts | `/api/alerts` |
-| Equipment | `/api/equipment` |
-| Stats | `/api/stats` |
-| Users | `/api/users` |
+To enable it locally, run with the `dev` profile:
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 ---
 
-## Architecture Decisions
+## Demo Account
 
-Key decisions made before development:
+A demo account is available at [pitlaneapp.net/login](https://www.pitlaneapp.net/login) — click **"Ver demonstração"** to explore the app with pre-loaded data across three vehicles with different alert statuses (CRITICAL, WARNING and NONE).
 
-- **Java + Spring Boot** — returning to the language where my programming foundations were built, and the industry standard for Java backend
-- **PostgreSQL** — relational data model fits naturally (users → vehicles → maintenances → alerts)
-- **Flyway** — versioned schema migrations, always in sync with code
-- **JWT** — stateless auth, scales horizontally without server-side session state
-- **Docker Compose** — single command to spin up the full local environment
-- **React + Vite** — familiar frontend framework, modern tooling, focused on backend as the differentiator
-
-Full architecture decisions document in `docs/architecture/`.
+Demo sessions are tracked and data is automatically reset daily at 20:00 UTC, or immediately on logout.
 
 ---
 
 ## License
 
-MIT — free to use, learn from, and build upon.
-
----
-
-*Built with Java 21, Spring Boot 3, React 18 and PostgreSQL — April 2025 by [Miguel Maravilhas](https://linkedin.com/in/miguel-fmsilva)*
+This project is for portfolio purposes. All rights reserved.
