@@ -1,8 +1,26 @@
-# Pitlane 
+# Pitlane 🏎️
+> Digital garage — centralise all your vehicle maintenance responsibilities in one place.
+
+![Java](https://img.shields.io/badge/Java_21-ED8B00?style=flat&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=flat&logo=spring&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat&logo=springsecurity&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-316192?style=flat&logo=postgresql&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-CC0200?style=flat&logo=flyway&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![React](https://img.shields.io/badge/React_18-20232A?style=flat&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_v4-38B2AC?style=flat&logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
+![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=flat&logo=railway&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
+
+---
 
 **Pitlane** is a digital garage — a full-stack web and mobile application that centralises all your vehicle maintenance responsibilities in one place. Track services, manage alerts for upcoming maintenance, and monitor costs across your entire fleet.
 
-**Live:** [pitlaneapp.net](https://www.pitlaneapp.net) — try it instantly with the **demo account**, no registration required.
+🌐 **Live:** [pitlaneapp.net](https://www.pitlaneapp.net) — try it instantly with the **demo account**, no registration required.
+
+> Personal project built to demonstrate Java and Spring Boot capabilities, transitioning from a C#/.NET background. Designed and developed end-to-end as a portfolio piece.
 
 ---
 
@@ -59,7 +77,6 @@
 |---|---|
 | Railway | Backend + PostgreSQL hosting |
 | Vercel | Frontend hosting |
-| GitHub Actions | CI/CD |
 
 ---
 
