@@ -16,11 +16,11 @@
 
 ---
 
-**Pitlane** is a digital garage — a full-stack web and mobile application that centralises all your vehicle maintenance responsibilities in one place. Track services, manage alerts for upcoming maintenance, and monitor costs across your entire fleet.
+**Pitlane** is a full-stack web and Android application that solves a real problem: keeping a consistent maintenance history across multiple vehicles, with automated alerts before things go wrong and a clear picture of what you're actually spending.
+
+Most people track this in WhatsApp messages, paper receipts, or not at all. Pitlane centralises it.
 
 🌐 **Live:** [pitlaneapp.net](https://www.pitlaneapp.net) — try it instantly with the **demo account**, no registration required.
-
-> Personal project built to demonstrate Java and Spring Boot capabilities, transitioning from a C#/.NET background. Designed and developed end-to-end as a portfolio piece.
 
 ---
 
@@ -32,7 +32,7 @@
 - **Cost dashboard** — spending breakdown by category and vehicle, filterable by month, year or all time
 - **Google OAuth2** — sign in with Google or with email/password
 - **Bilingual** — Portuguese and English (i18next)
-- **Mobile app** — Android app built with Capacitor
+- **Android app** — built with Capacitor on top of the same React codebase, no duplication
 - **Demo account** — isolated demo session with automatic data reset
 
 ---
@@ -61,7 +61,7 @@
 | Tailwind CSS v4 | Utility-first styling with CSS variables design system |
 | React Router | Client-side routing |
 | i18next | Internationalisation (PT/EN) |
-| Capacitor | Android app wrapper |
+| Capacitor | Android app wrapper — wraps the same React build, zero logic duplication |
 
 ### Testing
 | Layer | Framework | Tests |
@@ -82,17 +82,38 @@
 
 ## Architecture Decisions
 
-**JWT stateless** — no server-side session storage, scales horizontally without shared state. Trade-off: tokens cannot be invalidated before expiry, mitigated with short expiration and refresh token support.
+**JWT stateless auth**
+No server-side session storage — tokens are self-contained and validated on every request. This means the backend scales horizontally without any shared session state. The trade-off is that tokens cannot be revoked before expiry. I considered Redis-backed sessions for easier invalidation, but for a single-account-per-user app with 24h token expiry the operational overhead of adding a cache layer didn't justify it. Mitigated with short expiration and refresh token support.
 
-**DTOs on every API boundary** — decouples the API contract from the database schema, prevents lazy-loading serialisation issues, and keeps the response shape stable across internal refactors.
+**DTOs on every API boundary**
+The API contract is fully decoupled from the database schema. This prevents Hibernate lazy-loading issues during serialisation, keeps response shapes stable across internal refactors, and means the frontend never sees raw entity structure. Any change to the domain model doesn't automatically become a breaking API change.
 
-**Flyway migrations** — every schema change is versioned and reproducible. Any developer can run `docker-compose up` and have a fully migrated database in seconds.
+**Flyway for schema versioning**
+Every schema change is a versioned SQL file committed alongside the code that needs it. Any developer — or a fresh Railway deployment — runs `docker-compose up` and gets a fully migrated database automatically. No manual steps, no "works on my machine" schema drift.
 
-**Costs stored in cents (Integer)** — avoids floating point precision issues. Frontend divides by 100 for display.
+**Costs stored as Integer (cents)**
+Floating point arithmetic on monetary values produces silent precision errors. Storing costs as cents (Integer) makes all calculations exact. The frontend divides by 100 for display only.
 
-**Alert status calculated server-side** — CRITICAL / WARNING / NONE computed in a single-pass loop over active alerts on every request, ensuring the frontend always receives pre-computed status without additional queries.
+**Alert status computed server-side on every request**
+CRITICAL / WARNING / NONE is calculated in a single-pass loop over the vehicle's active alerts before the response is sent. The frontend receives pre-computed status — no client-side logic, no additional queries, no stale state. At the current scale this is fast enough to not matter; if the fleet size grew significantly, this would move to a scheduled background job or an event-driven approach triggered on mileage updates.
 
-**Mileage invariant enforced at model level** — `Vehicle.setCurrentMileage()` throws `IllegalArgumentException` if the new value is lower than the current one, preventing invalid state regardless of which service calls it.
+**Mileage invariant enforced at the model layer**
+`Vehicle.setCurrentMileage()` throws `IllegalArgumentException` if the new value is lower than the current one. This constraint lives in the domain model, not in a service or a controller — it cannot be bypassed regardless of which code path calls it.
+
+**Swagger only in dev profile**
+API documentation is available locally but disabled in production. Keeps the attack surface smaller and avoids exposing endpoint structure unnecessarily.
+
+---
+
+## Known Trade-offs and What I'd Do Differently at Scale
+
+These are conscious decisions that made sense for a solo portfolio project, but would need revisiting in a production system with real growth:
+
+- **No rate limiting** — the API has no request throttling. In production I'd add it at the gateway level or with Spring's `HandlerInterceptor`.
+- **Alert recalculation is synchronous and per-request** — fine now, but with thousands of vehicles this would move to a scheduled job (`@Scheduled`) or become event-driven on mileage updates.
+- **Demo data reset is a cron job** — works for one instance, but doesn't scale horizontally. A proper approach would use tenant isolation with scoped data per session.
+- **No observability** — no structured logging, no metrics, no distributed tracing. I'd add Micrometer + a logging aggregator before taking this anywhere near production load.
+- **Single-region deployment** — Railway runs in one region. No CDN for the API, no read replicas on the database.
 
 ---
 
@@ -191,15 +212,15 @@ npm test
 Pitlane/
 ├── backend/
 │   ├── src/main/java/com/pitlane/pitlane/
-│   │   ├── controller/     # REST endpoints
-│   │   ├── service/        # Business logic
-│   │   ├── repository/     # Data access
-│   │   ├── model/          # JPA entities
-│   │   ├── dto/            # Data transfer objects
+│   │   ├── controller/     # REST endpoints — thin layer, no business logic
+│   │   ├── service/        # Business logic and orchestration
+│   │   ├── repository/     # Data access via Spring Data JPA
+│   │   ├── model/          # JPA entities and domain invariants
+│   │   ├── dto/            # API contract — decoupled from entity structure
 │   │   ├── security/       # JWT filter, auth entry point
 │   │   └── config/         # Security config, OAuth2 handler
 │   └── src/main/resources/
-│       └── db/migration/   # Flyway SQL migrations
+│       └── db/migration/   # Flyway SQL migrations — one file per schema change
 ├── frontend/
 │   └── src/
 │       ├── components/     # Reusable UI components
