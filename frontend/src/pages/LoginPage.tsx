@@ -5,12 +5,8 @@ import { useAuth } from '../hooks/useAuth.ts'
 import { authService } from '../services/authService.ts'
 import type { LoginRequest } from '../models/auth.ts'
 
-const DEMO_EMAIL = 'demo@pitlane.com'
-const DEMO_PASSWORD = 'pitlane-demo-2024'
-
 /**
  * Represents the login page
- * @constructor
  */
 const LoginPage = () => {
     const [form, setForm] = useState<LoginRequest>({ email: '', password: '' })
@@ -25,7 +21,6 @@ const LoginPage = () => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
-    /** After logging in, the app makes a request to store the user info to present it */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -33,6 +28,7 @@ const LoginPage = () => {
         try {
             const res = await authService.login(form)
             localStorage.setItem('token', res.token)
+            localStorage.removeItem('isDemo')
             const user = await authService.userInfo()
             login(res.token, user)
             navigate('/dashboard')
@@ -43,27 +39,24 @@ const LoginPage = () => {
         }
     }
 
-    const doLogin = async (email: string, password: string, isDemo = false) => {
-        const res = await authService.login({ email, password })
-        localStorage.setItem('token', res.token)
-        if (isDemo) localStorage.setItem('isDemo', 'true')
-        else localStorage.removeItem('isDemo')
-        const user = await authService.userInfo()
-        login(res.token, user)
-        navigate('/dashboard')
-    }
-
     const handleDemoLogin = async () => {
         setDemoLoading(true)
         setError(null)
         try {
-            // Regista início de sessão
-            await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/start`, {
+            // Creates a temp isolated demo account and returns a 2h token
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/start`, {
                 method: 'POST'
             })
-            await doLogin(DEMO_EMAIL, DEMO_PASSWORD, true)
+            if (!res.ok) throw new Error()
+            const data = await res.json()
+
+            localStorage.setItem('token', data.token)
+            localStorage.setItem('isDemo', 'true')
+            const user = await authService.userInfo()
+            login(data.token, user)
+            navigate('/dashboard')
         } catch {
-            setError('Não foi possível carregar a demonstração. Tenta novamente.')
+            setError(t('login.demoError'))
         } finally {
             setDemoLoading(false)
         }
@@ -88,19 +81,19 @@ const LoginPage = () => {
                     {demoLoading ? (
                         <>
                             <span className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin" />
-                            A carregar demonstração...
+                            {t('login.demoLoading')}
                         </>
                     ) : (
                         <>
                             <span>▶</span>
-                            Ver demonstração
+                            {t('login.demo')}
                         </>
                     )}
                 </button>
 
                 <div className="flex items-center gap-3 mb-6">
                     <div className="flex-1 h-px bg-border" />
-                    <span className="text-text-muted text-xs">ou entra com a tua conta</span>
+                    <span className="text-text-muted text-xs">{t('login.orAccount')}</span>
                     <div className="flex-1 h-px bg-border" />
                 </div>
 
