@@ -2,9 +2,7 @@ package com.pitlane.pitlane.service;
 
 import com.pitlane.pitlane.dto.CreateMaintenanceRequestDto;
 import com.pitlane.pitlane.model.*;
-import com.pitlane.pitlane.repository.AlertRepository;
-import com.pitlane.pitlane.repository.MaintenanceRepository;
-import com.pitlane.pitlane.repository.VehicleRepository;
+import com.pitlane.pitlane.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +36,15 @@ class MaintenanceServiceTest {
 
     @Mock
     private AlertRepository alertRepository;
+
+    @Mock
+    private MaintenancePhotoRepository maintenancePhotoRepository;
+
+    @Mock
+    private StorageService storageService;
+
+    @Mock
+    private DemoService demoService;
 
     @InjectMocks
     private MaintenanceService maintenanceService;
@@ -84,8 +91,9 @@ class MaintenanceServiceTest {
         when(maintenanceRepository.findByTypeAndDateAndVehicle(any(), any(), any())).thenReturn(Optional.empty());
         when(alertRepository.findActiveByVehicleAndType(any(), any())).thenReturn(Optional.empty());
         when(maintenanceRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(demoService.isDemoUser(any())).thenReturn(false);
 
-        Maintenance result = maintenanceService.createMaintenance(vehicle.getId(), user, dto);
+        Maintenance result = maintenanceService.createMaintenance(vehicle.getId(), user, dto, null);
 
         assertThat(result.getType()).isEqualTo(Maintenance.MaintenanceType.OIL_CHANGE);
         assertThat(result.getMileage()).isEqualTo(100000);
@@ -100,7 +108,7 @@ class MaintenanceServiceTest {
     void createMaintenance_vehicleNotFound_throwsException() {
         when(vehicleRepository.findByIdAndUser(any(), any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> maintenanceService.createMaintenance(vehicle.getId(), user, dto))
+        assertThatThrownBy(() -> maintenanceService.createMaintenance(vehicle.getId(), user, dto, null))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Vehicle not found");
 
@@ -116,7 +124,7 @@ class MaintenanceServiceTest {
         when(maintenanceRepository.findByTypeAndDateAndVehicle(any(), any(), any()))
                 .thenReturn(Optional.of(Maintenance.builder().build()));
 
-        assertThatThrownBy(() -> maintenanceService.createMaintenance(vehicle.getId(), user, dto))
+        assertThatThrownBy(() -> maintenanceService.createMaintenance(vehicle.getId(), user, dto, null))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Maintenance already exists for this type and date");
 
@@ -145,8 +153,9 @@ class MaintenanceServiceTest {
         when(maintenanceRepository.findByTypeAndDateAndVehicle(any(), any(), any())).thenReturn(Optional.empty());
         when(alertRepository.findActiveByVehicleAndType(any(), any())).thenReturn(Optional.empty());
         when(maintenanceRepository.save(any())).thenReturn(savedMaintenance);
+        when(demoService.isDemoUser(any())).thenReturn(false);
 
-        maintenanceService.createMaintenance(vehicle.getId(), user, dto);
+        maintenanceService.createMaintenance(vehicle.getId(), user, dto, null);
 
         verify(alertRepository).save(any(Alert.class));
     }
@@ -172,8 +181,9 @@ class MaintenanceServiceTest {
         when(maintenanceRepository.findByTypeAndDateAndVehicle(any(), any(), any())).thenReturn(Optional.empty());
         when(alertRepository.findActiveByVehicleAndType(any(), any())).thenReturn(Optional.empty());
         when(maintenanceRepository.save(any())).thenReturn(savedMaintenance);
+        when(demoService.isDemoUser(any())).thenReturn(false);
 
-        maintenanceService.createMaintenance(vehicle.getId(), user, dto);
+        maintenanceService.createMaintenance(vehicle.getId(), user, dto, null);
 
         verify(alertRepository, never()).save(any(Alert.class));
     }
@@ -202,8 +212,9 @@ class MaintenanceServiceTest {
         when(maintenanceRepository.findByTypeAndDateAndVehicle(any(), any(), any())).thenReturn(Optional.empty());
         when(alertRepository.findActiveByVehicleAndType(vehicle, dto.getMaintenanceType())).thenReturn(Optional.of(existingAlert));
         when(maintenanceRepository.save(any())).thenReturn(savedMaintenance);
+        when(demoService.isDemoUser(any())).thenReturn(false);
 
-        maintenanceService.createMaintenance(vehicle.getId(), user, dto);
+        maintenanceService.createMaintenance(vehicle.getId(), user, dto, null);
 
         assertThat(existingAlert.getResolvedAt()).isNotNull();
         verify(alertRepository).save(existingAlert);

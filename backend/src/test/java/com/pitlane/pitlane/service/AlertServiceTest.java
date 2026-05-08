@@ -33,6 +33,9 @@ class AlertServiceTest {
     private AlertRepository alertRepository;
 
     @Mock
+    private DemoService demoService;
+
+    @Mock
     private VehicleRepository vehicleRepository;
 
     @InjectMocks

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +28,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -99,7 +100,8 @@ class MaintenanceControllerTest {
     // ─── POST /api/maintenance ────────────────────────────────────────────────
 
     /**
-     * Authenticated request to create a maintenance should return 200 with the maintenance id
+     * Authenticated request to create a maintenance should return 200 with the maintenance id.
+     * Request is sent as multipart/form-data with the maintenance JSON as a part.
      */
     @Test
     @WithMockPitlaneUser
@@ -127,13 +129,22 @@ class MaintenanceControllerTest {
         when(maintenanceService.createMaintenance(
                 eq(vehicleId),
                 any(User.class),
-                any(CreateMaintenanceRequestDto.class)
+                any(CreateMaintenanceRequestDto.class),
+                any()
         )).thenReturn(maintenance);
 
-        mockMvc.perform(post("/api/maintenance")
+        // Endpoint now expects multipart/form-data with a "maintenance" JSON part
+        MockMultipartFile maintenancePart = new MockMultipartFile(
+                "maintenance",
+                "",
+                MediaType.APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(dto)
+        );
+
+        mockMvc.perform(multipart("/api/maintenance")
+                        .file(maintenancePart)
                         .param("vehicleId", vehicleId.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(content().string(maintenance.getId().toString()));
     }

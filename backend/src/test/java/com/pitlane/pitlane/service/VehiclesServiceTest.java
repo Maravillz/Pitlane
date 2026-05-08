@@ -39,6 +39,9 @@ class VehiclesServiceTest {
     private MileageLogRepository mileageLogRepository;
 
     @Mock
+    private DemoService demoService;
+
+    @Mock
     private AlertRepository alertRepository;
 
     @Mock
