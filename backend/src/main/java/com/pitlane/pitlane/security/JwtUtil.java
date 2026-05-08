@@ -14,44 +14,36 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    /** The secret string used to encrypt the keys, the secret cannot be shared */
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    /** The time in ms the token will be valid for */
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
 
-    /** The encrypted key used to sign the requests to prove authenticity */
     private SecretKey key;
 
-    /** Initializer that creates an encrypted key to sign the requests when the class is initialized, creating the key once */
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * Generates a token for the user using the secret
-     * @param username The username of the logged user
-     * @return The token generated for the user
-     */
-    public String generateToken (String username){
+    /** Generates a token with the default expiration from properties */
+    public String generateToken(String username) {
+        return generateToken(username, jwtExpirationMs);
+    }
+
+    /** Generates a token with a custom expiration — used for demo temp accounts (2h) */
+    public String generateToken(String username, long expirationMs) {
         Date now = new Date();
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + jwtExpirationMs))
+                .expiration(new Date(now.getTime() + expirationMs))
                 .signWith(key)
                 .compact();
     }
 
-    /**
-     * Extracts the username from the payload of the given token
-     * @param token The given token
-     * @return The username extracted from the token payload
-     */
-    public String getUsernameFromToken(String token){
+    public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -60,12 +52,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    /**
-     * Uses the bult-in validation to catch any errors with the token and uses try/catch to make custom messages based on the validation error thrown
-     * @param token The token that is being validated
-     * @return Returns true if the token is valid
-     */
-    public boolean validateJwtToken(String token){
+    public boolean validateJwtToken(String token) {
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
@@ -83,28 +70,3 @@ public class JwtUtil {
         return false;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
