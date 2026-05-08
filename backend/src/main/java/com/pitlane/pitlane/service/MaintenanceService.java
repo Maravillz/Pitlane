@@ -1,20 +1,15 @@
 package com.pitlane.pitlane.service;
 
-import com.pitlane.pitlane.dto.CreateMaintenanceRequestDto;
-import com.pitlane.pitlane.model.Alert;
-import com.pitlane.pitlane.model.Maintenance;
-import com.pitlane.pitlane.model.User;
-import com.pitlane.pitlane.model.Vehicle;
-import com.pitlane.pitlane.repository.AlertRepository;
-import com.pitlane.pitlane.repository.MaintenanceRepository;
-import com.pitlane.pitlane.repository.VehicleRepository;
-import com.sun.tools.javac.Main;
+import com.pitlane.pitlane.dto.*;
+import com.pitlane.pitlane.model.*;
+import com.pitlane.pitlane.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 /** Maintenance Service */
@@ -22,24 +17,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MaintenanceService {
 
-    /** Maintenance Repository */
     private final MaintenanceRepository maintenanceRepository;
-
-    /** Vehicle Repository */
     private final VehicleRepository vehicleRepository;
-
-    /** Alert Repository */
     private final AlertRepository alertRepository;
+    private final MaintenancePhotoRepository maintenancePhotoRepository;
+    private final StorageService storageService;
+    private final DemoService demoService;
 
-    /**
-     * Creates a maintenance for a vehicle if it exists, creates an alert if prompted and resolved any alert pending for a previous maintenance of the same type
-     * @param vehicleId The vehicle id
-     * @param user The logged user
-     * @param maintenanceDto The maintenance object with the information to create it
-     * @return The created maintenance
-     */
     @Transactional
-    public Maintenance createMaintenance(UUID vehicleId, User user, CreateMaintenanceRequestDto maintenanceDto) {
+    public Maintenance createMaintenance(UUID vehicleId, User user, CreateMaintenanceRequestDto maintenanceDto, List<MultipartFile> photos) {
 
         Vehicle vehicle = vehicleRepository.findByIdAndUser(vehicleId, user)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
@@ -48,7 +34,7 @@ public class MaintenanceService {
             throw new RuntimeException("Maintenance already exists for this type and date");
         }
 
-        Maintenance newMaintenance = Maintenance.builder()
+        Maintenance saved = maintenanceRepository.save(Maintenance.builder()
                 .vehicle(vehicle)
                 .type(maintenanceDto.getMaintenanceType())
                 .date(maintenanceDto.getDate())
@@ -56,9 +42,9 @@ public class MaintenanceService {
                 .costCents(maintenanceDto.getCostCents())
                 .notes(maintenanceDto.getNotes())
                 .createdAt(LocalDateTime.now())
-                .build();
+                .build());
 
-        Maintenance saved = maintenanceRepository.save(newMaintenance);
+        uploadPhotos(photos, saved);
 
         alertRepository.findActiveByVehicleAndType(vehicle, maintenanceDto.getMaintenanceType())
                 .ifPresent(existingAlert -> {
@@ -66,17 +52,127 @@ public class MaintenanceService {
                     alertRepository.save(existingAlert);
                 });
 
-        if (maintenanceDto.getCreateAlert() == true &&
+        if (maintenanceDto.getCreateAlert() &&
                 (maintenanceDto.getAlertIntervalKm() != null || maintenanceDto.getAlertIntervalDays() != null)) {
-            Alert alert = Alert.builder()
+            alertRepository.save(Alert.builder()
                     .maintenance(saved)
                     .intervalKm(maintenanceDto.getAlertIntervalKm())
                     .intervalDays(maintenanceDto.getAlertIntervalDays())
                     .createdAt(LocalDateTime.now())
-                    .build();
-            alertRepository.save(alert);
+                    .build());
+        }
+
+        // Record demo change
+        if (demoService.isDemoUser(user)) {
+            demoService.recordChange("MAINTENANCE_CREATED");
         }
 
         return saved;
+    }
+
+    @Transactional
+    public MaintenanceDetailResponseDto getMaintenanceDetail(UUID maintenanceId, User user) {
+        Maintenance maintenance = findAndValidate(maintenanceId, user);
+
+        List<MaintenanceDetailResponseDto.PhotoDto> photos = maintenancePhotoRepository
+                .findAllByMaintenance(maintenance)
+                .stream()
+                .map(photo -> MaintenanceDetailResponseDto.PhotoDto.builder()
+                        .id(photo.getId())
+                        .url(storageService.generatePresignedUrl(photo.getUrl()))
+                        .build())
+                .toList();
+
+        AlertResponseDto alertDto = alertRepository.findByMaintenance(maintenance)
+                .map(alert -> AlertResponseDto.builder()
+                        .id(alert.getId())
+                        .maintenanceType(maintenance.getType())
+                        .intervalKm(alert.getIntervalKm())
+                        .intervalDays(alert.getIntervalDays())
+                        .resolvedAt(alert.getResolvedAt())
+                        .createdAt(alert.getCreatedAt())
+                        .build())
+                .orElse(null);
+
+        return MaintenanceDetailResponseDto.builder()
+                .id(maintenance.getId())
+                .type(maintenance.getType())
+                .date(maintenance.getDate())
+                .mileage(maintenance.getMileage())
+                .costCents(maintenance.getCostCents())
+                .notes(maintenance.getNotes())
+                .createdAt(maintenance.getCreatedAt())
+                .photos(photos)
+                .alert(alertDto)
+                .build();
+    }
+
+    @Transactional
+    public MaintenanceDetailResponseDto updateMaintenance(UUID maintenanceId, User user,
+                                                          UpdateMaintenanceRequestDto dto,
+                                                          List<MultipartFile> newPhotos) {
+        Maintenance maintenance = findAndValidate(maintenanceId, user);
+
+        maintenance.setType(dto.getMaintenanceType());
+        maintenance.setDate(dto.getDate());
+        maintenance.setMileage(dto.getMileage());
+        maintenance.setCostCents(dto.getCostCents());
+        maintenance.setNotes(dto.getNotes());
+        maintenanceRepository.save(maintenance);
+
+        uploadPhotos(newPhotos, maintenance);
+
+        return getMaintenanceDetail(maintenanceId, user);
+    }
+
+    @Transactional
+    public void deleteMaintenance(UUID maintenanceId, User user) {
+        Maintenance maintenance = findAndValidate(maintenanceId, user);
+
+        maintenancePhotoRepository.findAllByMaintenance(maintenance)
+                .forEach(photo -> storageService.delete(photo.getUrl()));
+        maintenancePhotoRepository.deleteAllByMaintenance(maintenance);
+
+        alertRepository.findByMaintenance(maintenance)
+                .ifPresent(alertRepository::delete);
+
+        maintenanceRepository.delete(maintenance);
+    }
+
+    @Transactional
+    public void deletePhoto(UUID photoId, User user) {
+        MaintenancePhoto photo = maintenancePhotoRepository.findById(photoId)
+                .orElseThrow(() -> new RuntimeException("Photo not found"));
+
+        if (!photo.getMaintenance().getVehicle().getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        storageService.delete(photo.getUrl());
+        maintenancePhotoRepository.delete(photo);
+    }
+
+    private Maintenance findAndValidate(UUID maintenanceId, User user) {
+        Maintenance maintenance = maintenanceRepository.findById(maintenanceId)
+                .orElseThrow(() -> new RuntimeException("Maintenance not found"));
+
+        if (!maintenance.getVehicle().getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+        return maintenance;
+    }
+
+    private void uploadPhotos(List<MultipartFile> photos, Maintenance maintenance) {
+        if (photos == null || photos.isEmpty()) return;
+        photos.stream()
+                .filter(photo -> !photo.isEmpty())
+                .forEach(photo -> {
+                    String key = storageService.upload(photo, "maintenance/" + maintenance.getId());
+                    maintenancePhotoRepository.save(MaintenancePhoto.builder()
+                            .maintenance(maintenance)
+                            .url(key)
+                            .createdAt(LocalDateTime.now())
+                            .build());
+                });
     }
 }
