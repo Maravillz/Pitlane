@@ -22,30 +22,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AlertService {
 
-    /** Alert repository */
     private final AlertRepository alertRepository;
-
-    /** Vehicle Repository */
     private final VehicleRepository vehicleRepository;
+    private final DemoService demoService;
 
-    /** Warning km in the settings */
     @Value("${pitlane.alerts.warning-km-threshold}")
     private int warningKmThreshold;
 
-    /** Warning date in the settings */
     @Value("${pitlane.alerts.warning-days-threshold}")
     private int warningDaysThreshold;
 
-    /**
-     * Extracts all the vehicles from the user and uses the method getAlerts to extract alerts from the maintenances from those vehicles
-     * @param user The user That made the request
-     * @return A list of Alerts DTO for the alert page
-     */
     @Transactional
-    public List<AlertResponseDto> getAlertsByUser(User user){
+    public List<AlertResponseDto> getAlertsByUser(User user) {
         List<Vehicle> vehicles = vehicleRepository.findAllByUser(user);
-        if(vehicles.isEmpty())
-            return List.of();
+        if (vehicles.isEmpty()) return List.of();
 
         return vehicles.stream().flatMap(v -> getAlerts(v).stream().map(a -> AlertResponseDto.builder()
                 .id(a.getId())
@@ -57,11 +47,6 @@ public class AlertService {
                 .build())).toList();
     }
 
-    /**
-     * Checks if the user that made the request owns the alert and sets the alert resolvedAt field with the current date
-     * @param alertId The identification of the alert to be resolved
-     * @param user The user tht made the request
-     */
     @Transactional
     public void resolveAlert(UUID alertId, User user) {
         Alert alert = alertRepository.findById(alertId)
@@ -73,38 +58,24 @@ public class AlertService {
 
         alert.setResolvedAt(LocalDateTime.now());
         alertRepository.save(alert);
+
+        // Record demo change if demo user
+        if (demoService.isDemoUser(user)) {
+            demoService.recordChange("ALERT_RESOLVED");
+        }
     }
 
-    /**
-     * Gets all alerts associated to a vehicle
-     * @param vehicle The vehicle with the alerts associated
-     * @return A list of alerts if there is any or a empty list
-     */
     private List<Alert> getAlerts(Vehicle vehicle) {
         List<Maintenance> maintenances = vehicle.getMaintenances();
         if (maintenances == null) return List.of();
-
         return maintenances.stream()
                 .flatMap(m -> alertRepository.findByMaintenance(m).stream()).toList();
     }
 
-    /**
-     * Returns the active alerts for a vehicle. Uses the get alert method and filters the alerts without a resolved date
-     * @param vehicle The vehicle with the alerts associated
-     * @return A list of alerts without a resolved time
-     */
     protected List<Alert> getActiveAlerts(Vehicle vehicle) {
         return getAlerts(vehicle).stream().filter(a -> a.getResolvedAt() == null).toList();
     }
 
-    /**
-     * Checks if the current km exceeds the limit km or the date is after the limit date
-     * @param alert The alert being analyzed
-     * @param currentMileage The current mileage of the vehicle
-     * @param maintenanceDate The date when the maintenance was made
-     * @param maintenanceMileage The mileage the vehicle had when the maintenance was made
-     * @return True if it is critical
-     */
     private boolean isCritical(Alert alert, Integer currentMileage, LocalDate maintenanceDate, Integer maintenanceMileage) {
         boolean kmCritical = alert.getIntervalKm() != null &&
                 currentMileage >= maintenanceMileage + alert.getIntervalKm();
@@ -113,14 +84,6 @@ public class AlertService {
         return kmCritical || dateCritical;
     }
 
-    /**
-     * Checks if the current km is after the warning km but before the limit km and checks if the date is after the date km and before the limit date
-     * @param alert The alert being analyzed
-     * @param currentMileage The current mileage of the vehicle
-     * @param maintenanceDate The date when the maintenance was made
-     * @param maintenanceMileage The mileage the vehicle had when the maintenance was made
-     * @return True if it is a warning
-     */
     private boolean isWarning(Alert alert, Integer currentMileage, LocalDate maintenanceDate, Integer maintenanceMileage) {
         boolean kmWarning = alert.getIntervalKm() != null &&
                 currentMileage >= maintenanceMileage + alert.getIntervalKm() - warningKmThreshold;
@@ -129,19 +92,16 @@ public class AlertService {
         return kmWarning || dateWarning;
     }
 
-    /**
-     * Loops all the alerts and returns the most important status present for the vehicle CRITICAL > WARNING > NONE
-     * @param vehicle The vehicle with the alerts associated
-     * @return The string containing the most important status
-     */
     protected String calculateAlertStatus(Vehicle vehicle) {
         List<Alert> activeAlerts = getActiveAlerts(vehicle);
         boolean hasWarning = false;
 
         for (Alert alert : activeAlerts) {
             Maintenance maintenance = alert.getMaintenance();
-            if (isCritical(alert, vehicle.getCurrentMileage(), maintenance.getDate(), maintenance.getMileage())) return "CRITICAL";
-            if (isWarning(alert, vehicle.getCurrentMileage(), maintenance.getDate(), maintenance.getMileage())) hasWarning = true;
+            if (isCritical(alert, vehicle.getCurrentMileage(), maintenance.getDate(), maintenance.getMileage()))
+                return "CRITICAL";
+            if (isWarning(alert, vehicle.getCurrentMileage(), maintenance.getDate(), maintenance.getMileage()))
+                hasWarning = true;
         }
 
         return hasWarning ? "WARNING" : "NONE";
