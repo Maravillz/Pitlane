@@ -8,7 +8,7 @@ import type {MaintenanceResponse} from "../models/maintenance.ts";
 import {useTranslation} from "react-i18next";
 import RegisterMileageModal from "../components/layout/RegisterMileageModal.tsx";
 import EditVehicleModal from "../components/layout/EditVehicleModal.tsx";
-import {CheckCircleIcon, WrenchScrewdriverIcon} from "@heroicons/react/16/solid";
+import {CheckCircleIcon, ChevronRightIcon, WrenchScrewdriverIcon} from "@heroicons/react/16/solid";
 import { sortAlertsByProximity } from '../utils/alertUtils'
 import AlertCard from "../components/ui/AlertCard.tsx";
 
@@ -170,7 +170,9 @@ const CarDetailPage = () => {
                             {vehicle?.maintenances.slice()
                                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                                 .map((maintenance: MaintenanceResponse) => (
-                                    <div key={maintenance.id} className="flex flex-row justify-between items-center bg-bg-card rounded-2xl px-4 py-3 border border-border">
+                                    <div key={maintenance.id}
+                                         onClick={() => navigate(`/maintenance/${maintenance.id}`)}
+                                         className="flex flex-row justify-between items-center bg-bg-card rounded-2xl px-4 py-3 border border-border">
                                         <div className="flex flex-col">
                                             <span className="text-sm text-text-primary font-medium">
                                                 {t(`maintenanceTypes.${maintenance.type}`)}
@@ -179,9 +181,14 @@ const CarDetailPage = () => {
                                                 {maintenance.date} · {maintenance.mileage.toLocaleString()} km
                                             </span>
                                         </div>
-                                        <span className="text-text-secondary text-sm font-medium">
-                                            {((maintenance.costCents ?? 0) / 100).toFixed(2)}€
-                                        </span>
+                                        <div className="flex flex-row align-middle items-center">
+                                            <span className="text-text-secondary text-sm font-medium">
+                                                {((maintenance.costCents ?? 0) / 100).toFixed(2)}€
+                                            </span>
+                                            <ChevronRightIcon className="w-4 h-4 text-text-muted flex-shrink-0 ml-2" />
+                                        </div>
+
+
                                     </div>
                                 ))}
                         </div>
