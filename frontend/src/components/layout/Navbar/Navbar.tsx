@@ -29,8 +29,8 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 z-30 w-full bg-bg-page/80 backdrop-blur-md border-b border-border/50 lg:h-[7%]">
-            <div className="px-5 md:px-8 max-w-4xl mx-auto lg:mx-2 lg:max-w-full">
-                <div className="flex h-14 items-center justify-between">
+            <div className="px-5 md:px-8 max-w-4xl mx-auto lg:mx-2 lg:max-w-full lg:h-full">
+                <div className="flex h-14 items-center justify-between lg:h-full">
 
                     {/* Left — logo or back arrow (mobile only) */}
                     <div className="flex items-center">
@@ -50,7 +50,14 @@ const Navbar = () => {
                             )}
                         </div>
                         {/* Desktop: brand is in sidebar, show nothing here */}
-                        <div className="hidden md:block" />
+
+                        {hasReturn ? (
+                                <button
+                                    onClick={() => navigate(-1)}
+                                    className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
+                                    <ArrowLeftIcon className="w-5 h-5" />
+                                </button>
+                            ): <div className="hidden md:block" />}
                     </div>
 
                     {/* Right — language + profile */}

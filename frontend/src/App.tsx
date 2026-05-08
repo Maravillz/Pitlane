@@ -11,10 +11,14 @@ import CarDetailPage from "./pages/CarDetailPage.tsx";
 import CreateMaintenance from "./pages/CreateMaintenance.tsx";
 import AlertPage from "./pages/AlertPage.tsx";
 import CostPage from "./pages/CostPage.tsx";
+import MaintenanceDetailPage from './pages/MaintenanceDetailPage.tsx'
+import {useAuth} from "./hooks/useAuth.ts";
 
 const App = () => {
+    const { user } = useAuth();
+
     return (
-        <PageWrapper>
+        <PageWrapper key={user?.email ?? 'guest'}>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
@@ -26,6 +30,7 @@ const App = () => {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/alerts" element={<AlertPage />} />
                 <Route path="/costs" element={<CostPage />} />
+                <Route path="/maintenance/:id" element={<MaintenanceDetailPage />} />
                 <Route index element={<Navigate to="/dashboard" />} />
                 <Route path="*" element={<Navigate to="/dashboard" />} />
             </Routes>

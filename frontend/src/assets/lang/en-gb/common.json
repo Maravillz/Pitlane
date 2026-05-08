@@ -1,8 +1,12 @@
 {
   "login": {
     "email": "Email",
-    "error": "Invalid email or password",
-    "forgot": "Forgot your password?",
+    "error": "Incorrect email or password",
+    "demoError": "Could not load the demo. Please try again.",
+    "demo": "Try the demo",
+    "demoLoading": "Loading demo...",
+    "orAccount": "or sign in with your account",
+    "forgot": "Forgot?",
     "google": "Continue with Google",
     "or": "or",
     "password": "Password",
@@ -16,10 +20,26 @@
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
   },
+  "demo": {
+    "banner": "Demo mode — sample data to showcase the app",
+    "bannerCta": "Create free account →",
+    "welcomeBadge": "Demo",
+    "welcomeTitle": "Welcome to Pitlane",
+    "welcomeBody": "You're exploring the app with sample data. Your session is fully isolated — feel free to interact with everything without affecting other users.",
+    "welcomeFeatures": [
+      "Explore 3 vehicles with real maintenance history",
+      "Resolve alerts and log mileage updates",
+      "Create new maintenances with photos",
+      "View costs broken down by category and vehicle"
+    ],
+    "welcomeNote": "Your session expires after 2 hours or when you sign out. All data is automatically deleted.",
+    "welcomeCta": "Explore the app",
+    "welcomeRegister": "Create a free account"
+  },
   "nav": {
-    "login": "Enter",
-    "profile": "My Profile",
-    "signOut": "Sign Out"
+    "login": "Sign in",
+    "profile": "My profile",
+    "signOut": "Sign out"
   },
   "bottomNav": {
     "alerts": "Alerts",
@@ -34,21 +54,21 @@
     "or": "or",
     "password": "Password",
     "register": "Already have an account?",
-    "registerLink": "Login",
+    "registerLink": "Sign in",
     "submit": "Create Account",
     "submitting": "Creating...",
     "subtitle": "Create your account",
     "terms": "I accept the terms and conditions",
     "title": "Pitlane",
-    "displayNamePlaceholder": "display name",
+    "displayNamePlaceholder": "username",
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
   },
   "dashboard": {
     "myGarage": "My garage",
-    "noAlerts": "No Alerts",
-    "quickResume": "Quick Resume",
-    "thisMonth": "This Month",
+    "noAlerts": "No alerts",
+    "quickResume": "Quick summary",
+    "thisMonth": "This month",
     "costs": "Costs",
     "alerts": "Alerts",
     "in": "in",
@@ -60,12 +80,12 @@
     "alerts": "alerts",
     "Alerts": "Alerts",
     "total": "Total",
-    "interv": "Interventions",
+    "interv": "Services",
     "updated": "Updated",
-    "newMaint": "New Maint",
-    "registerKm": "Register Km",
+    "newMaint": "New Service",
+    "registerKm": "Log Mileage",
     "edit": "Edit",
-    "resume": "Resume",
+    "resume": "Summary",
     "maintenances": "Maintenances",
     "in": "In",
     "next": "next",
@@ -73,21 +93,21 @@
     "nextLabel": "Next",
     "resolved": "Resolved",
     "noAlerts": "No active alerts",
-    "noMaintenances": "No maintenance records yet",
+    "noMaintenances": "No maintenances recorded yet",
     "addFirst": "+ Add first maintenance"
   },
   "createCar": {
     "brand": "Brand",
-    "brandPlaceholder": "ex: Honda",
+    "brandPlaceholder": "e.g. Honda",
     "model": "Model",
-    "modelPlaceholder": "ex: Civic EK4",
+    "modelPlaceholder": "e.g. Civic EK4",
     "year": "Year",
     "yearPlaceholder": "1998",
-    "plate": "License Plate",
+    "plate": "Plate",
     "platePlaceholder": "XX-00-XX",
     "mileage": "Initial Mileage",
     "mileagePlaceholder": "187000",
-    "addCar": "Add Car"
+    "addCar": "Add Vehicle"
   },
   "createMaintenance": {
     "maintenanceType": "Maintenance Type",
@@ -97,7 +117,7 @@
     "notes": "Notes",
     "in": "in",
     "or": "or",
-    "noAlert": "No Alerts",
+    "noAlert": "No alert",
     "days": "days",
     "error": "Error creating maintenance",
     "photos": "Photos",
@@ -114,20 +134,20 @@
     "minute": "minute"
   },
   "maintenanceTypes": {
-    "OIL_CHANGE": "Oil Change",
+    "OIL_CHANGE": "Oil + filter",
     "TIRE_ROTATION": "Tire rotation",
-    "BRAKE_SERVICE": "Brake Service",
-    "AIR_FILTER": "Air Filter",
-    "SPARK_PLUGS": "Spark Plugs",
-    "TIMING_BELT": "Timing Belt",
-    "COOLANT_FLUSH": "Coolant Flush",
-    "TRANSMISSION_SERVICE": "Transmission Service",
+    "BRAKE_SERVICE": "Brake service",
+    "AIR_FILTER": "Air filter",
+    "SPARK_PLUGS": "Spark plugs",
+    "TIMING_BELT": "Timing belt",
+    "COOLANT_FLUSH": "Coolant flush",
+    "TRANSMISSION_SERVICE": "Transmission service",
     "BATTERY": "Battery",
     "INSPECTION": "Inspection",
     "OTHER": "Other"
   },
   "alertPage": {
-    "actives": "Actives",
+    "actives": "Active",
     "resolved": "Resolved"
   },
   "costs": {
@@ -135,30 +155,30 @@
     "year": "Year",
     "total": "Total",
     "totalSpent": "total spent in",
-    "allTime": "always",
+    "allTime": "all time",
     "byCategory": "By category",
     "byVehicle": "By vehicle"
   },
   "registerMileage": {
-    "title": "Update Km",
+    "title": "Update Mileage",
     "current": "Current",
-    "newMileage": "New Km",
+    "newMileage": "New Mileage",
     "confirm": "Confirm",
-    "error": "The value must be more than the current"
+    "error": "Value must be greater than current mileage"
   },
   "updateVehicle": {
-    "title": "Update Vehícle",
+    "title": "Update Vehicle",
     "brand": "Brand",
     "model": "Model",
     "year": "Year",
     "plate": "Plate",
     "confirm": "Confirm",
-    "error": "The vehicle information must be valid"
+    "error": "Vehicle information must be valid"
   },
   "alerts": {
     "allGood": "All alerts resolved",
     "noAlerts": "No Alerts",
-    "noAlertsSubtitle": "Activate alerts when creating maintenances"
+    "noAlertsSubtitle": "Enable alerts when creating maintenances"
   },
   "form": {
     "submit": "Submit"
@@ -170,5 +190,9 @@
     "language": "Language",
     "myVehicles": "My vehicles",
     "alerts": "Alerts"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save"
   }
 }

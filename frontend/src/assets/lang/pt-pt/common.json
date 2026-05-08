@@ -2,6 +2,10 @@
   "login": {
     "email": "Email",
     "error": "Email ou password incorrectos",
+    "demoError": "Não foi possível carregar a demonstração. Tenta novamente.",
+    "demo": "Ver demonstração",
+    "demoLoading": "A carregar demonstração...",
+    "orAccount": "ou entra com a tua conta",
     "forgot": "Esqueceste?",
     "google": "Continuar com Google",
     "or": "ou",
@@ -15,6 +19,22 @@
     "title": "Pitlane",
     "emailPlaceholder": "email@exemplo.com",
     "passwordPlaceholder": "••••••••"
+  },
+  "demo": {
+    "banner": "Modo demonstração — dados fictícios para ilustrar a app",
+    "bannerCta": "Criar conta grátis →",
+    "welcomeBadge": "Demonstração",
+    "welcomeTitle": "Bem-vindo ao Pitlane",
+    "welcomeBody": "Estás a explorar a app com dados de exemplo. A tua sessão é completamente isolada — podes mexer em tudo sem afetar outros utilizadores.",
+    "welcomeFeatures": [
+      "Explora 3 veículos com histórico real de manutenções",
+      "Resolve alertas e regista quilometragem",
+      "Cria novas manutenções com fotos",
+      "Vê os custos por categoria e veículo"
+    ],
+    "welcomeNote": "A sessão expira após 2 horas ou quando terminares sessão. Os dados são apagados automaticamente.",
+    "welcomeCta": "Explorar a app",
+    "welcomeRegister": "Criar conta gratuita"
   },
   "nav": {
     "login": "Entrar",
@@ -170,5 +190,9 @@
     "language": "Idioma",
     "myVehicles": "Os meus veículos",
     "alerts": "Alertas"
+  },
+  "common": {
+    "loading": "A carregar...",
+    "save": "Guardar"
   }
 }
