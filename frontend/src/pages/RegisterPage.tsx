@@ -44,7 +44,7 @@ const RegisterPage = () => {
     const labelClass = "text-text-primary text-sm font-medium"
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-6 py-12">
+        <div className="min-h-screen flex items-center justify-center px-6 py-12 lg:mt-[-150px]">
             <div className="w-full max-w-sm">
 
                 {/* Logo */}

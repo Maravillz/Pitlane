@@ -49,7 +49,7 @@ const RegisterMileageModal = ({ vehicleId, currentMileage, onClose, onSuccess }:
             onClick={onClose}
         >
             <div
-                className="bg-[#1e1e1e] rounded-t-2xl w-[90%] p-6 flex flex-col gap-4"
+                className="bg-[#1e1e1e] rounded-t-2xl w-[90%] p-6 flex flex-col gap-4 md:max-w-sm"
                 onClick={e => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center">

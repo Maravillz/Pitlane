@@ -119,7 +119,7 @@ const CreateMaintenance = () => {
                 ...form,
                 costCents: form.costCents ? Math.round(form.costCents * 100) : undefined
             }
-            await maintenanceService.createMaintenance(vehicleId, payload)
+            await maintenanceService.createMaintenance(vehicleId, payload, photos)
             navigate(-1)
         } catch {
             setError(t('createMaintenance.error'))
