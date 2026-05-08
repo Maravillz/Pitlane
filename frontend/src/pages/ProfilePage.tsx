@@ -17,7 +17,6 @@ const ProfilePage = () => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [stats, setStats] = useState<{ vehicles: number, totalCosts: number, maintenances: number } | null>(null)
-    const isDemo = localStorage.getItem('isDemo') === 'true'
 
     useEffect(() => {
         Promise.all([
@@ -39,11 +38,17 @@ const ProfilePage = () => {
     ]
 
     const handleLogout = async () => {
+        const isDemo = localStorage.getItem('isDemo') === 'true'
         if (isDemo) {
+            const token = localStorage.getItem('token')
             await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/end`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             })
             localStorage.removeItem('isDemo')
+            sessionStorage.removeItem('demoWelcomeSeen')
         }
         localStorage.removeItem('token')
         logout()

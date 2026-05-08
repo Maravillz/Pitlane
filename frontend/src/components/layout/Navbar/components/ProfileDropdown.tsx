@@ -18,10 +18,15 @@ const ProfileDropdown = () => {
     const handleLogout = async () => {
         const isDemo = localStorage.getItem('isDemo') === 'true'
         if (isDemo) {
+            const token = localStorage.getItem('token')
             await fetch(`${import.meta.env.VITE_API_URL}/api/demo/session/end`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             })
             localStorage.removeItem('isDemo')
+            sessionStorage.removeItem('demoWelcomeSeen')
         }
         localStorage.removeItem('token')
         logout()
@@ -35,7 +40,7 @@ const ProfileDropdown = () => {
                 <img
                     alt=""
                     src={getDefaultAvatar(user?.displayName ?? 'U T')}
-                    className="lg:size-10 lg:mt-5 size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
+                    className="lg:size-10 size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                 />
             </MenuButton>
 
